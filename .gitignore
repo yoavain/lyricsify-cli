@@ -1,0 +1,17 @@
+node_modules/**
+/_compile/
+_build/**
+dist/**
+.idea/**
+.vs/**
+deploy.bat
+installer/Lyricsify*.exe
+installer/*.reg
+installer/*.bat
+/.vscode/
+*.iml
+/coverage/
+/lsp/
+/.env
+/dist/
+/_build/

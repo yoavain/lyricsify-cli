@@ -1,0 +1,17 @@
+{
+    "extends": "@tsconfig/node14/tsconfig.json",
+    "compilerOptions": {
+        "strict": false,
+        "moduleResolution": "node",
+        "importsNotUsedAsValues": "error",
+        "allowJs": true,
+        "noEmit": true,
+        "baseUrl": ".",
+        "paths": {
+            "~src/*": ["src/*"],
+            "~test/*": ["test/*"],
+            "~resources/*": ["resources/*"]
+        }
+    },
+    "include": ["./src/**/*", "./test/**/*", "./*.ts", "./*.js"]
+}
