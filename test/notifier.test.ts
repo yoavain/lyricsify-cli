@@ -47,7 +47,7 @@ describe("Test notifier", () => {
 
         expect(mockNotify).toHaveBeenCalledTimes(1);
         expect(mockNotify.mock.calls[0][0]).toEqual({
-            title: "Ktuvit Subtitle Downloader",
+            title: "Lyricsify Downloader",
             message: "Testing notifier",
             icon: "notif-icons\\warning.png"
         });
@@ -68,7 +68,7 @@ describe("Test notifier", () => {
                 "Log",
                 "Close"
             ],
-            title: "Ktuvit Subtitle Downloader",
+            title: "Lyricsify Downloader",
             message: "Testing notifier",
             icon: "notif-icons\\failed.png"
         });

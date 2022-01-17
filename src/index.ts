@@ -36,16 +36,20 @@ const handleSingleFile = async (fullpath: string, fileExists: boolean): Promise<
     const split: string[] = fullpath.split("/");
     const parentFolder: string = fileExists && split.length > 1 ? split[split.length - 2] : undefined;
 
-    const x: FileMetadata = await getFileMetadata(fullpath);
+    // Parse metadata from file
+    const metadata: FileMetadata = await getFileMetadata(fullpath);
 
-
-    // Check if already exists - todo - from file
-    if (!x) {
+    // Check if already exists
+    if (metadata.hasLyrics) {
         notifier.notif("Lyrics already exist", NotificationType.WARNING);
         return;
     }
 
-    await Shironet.getLyrics(x.artist, x.title);
+    // Fetch lyrics
+    const lyrics = await Shironet.getLyrics(metadata.artist, metadata.title);
+
+    // todo - save lyrics to file (with backup)
+    console.log(lyrics);
 };
 
 // Batch

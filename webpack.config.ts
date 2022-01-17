@@ -52,11 +52,11 @@ export const baseConfig: webpack.Configuration = {
                     from: "resources/bin/lyricsify-launcher.exe",
                     to: "../dist/lyricsify-launcher.exe",
                     toType: "file"
-                },
-                {
-                    from: "resources/notif-icons-ktuvit/",
-                    to: "../dist/notif-icons/"
                 }
+                // {
+                //     from: "resources/notif-icons/",
+                //     to: "../dist/notif-icons/"
+                // }
             ]
         })
     ],
