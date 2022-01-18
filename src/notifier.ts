@@ -42,7 +42,10 @@ export class Notifier implements NotifierInterface {
     private readonly logger: LoggerInterface;
     private readonly notifier: NodeNotifier;
 
-    constructor(logger: LoggerInterface, snoreToastPath: string, quiet: boolean) {
+    constructor(logger: LoggerInterface, quiet: boolean) {
+        const executable = process.argv[0];
+        const snoreToastPath = executable.endsWith(".exe") ? path.resolve(executable, "../", "snoretoast-x64.exe") : null;
+
         this.logger = logger;
         if (!quiet) {
             this.logger.debug(`snoreToastPath: ${snoreToastPath}`);

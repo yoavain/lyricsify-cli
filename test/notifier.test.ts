@@ -29,7 +29,7 @@ describe("Test notifier", () => {
         const logger: LoggerInterface = new MockLogger();
 
         // Notifier
-        const notifier: NotifierInterface = new Notifier(logger, "", true);
+        const notifier: NotifierInterface = new Notifier(logger, true);
 
         notifier.notif("Testing notifier", NotificationType.LOGO);
 
@@ -41,7 +41,7 @@ describe("Test notifier", () => {
         const logger: LoggerInterface = new MockLogger();
 
         // Notifier
-        const notifier: NotifierInterface = new Notifier(logger, "", false);
+        const notifier: NotifierInterface = new Notifier(logger, false);
 
         notifier.notif("Testing notifier", NotificationType.WARNING);
 
@@ -58,7 +58,7 @@ describe("Test notifier", () => {
         const logger: LoggerInterface = new MockLogger();
 
         // Notifier
-        const notifier: NotifierInterface = new Notifier(logger, "", false);
+        const notifier: NotifierInterface = new Notifier(logger, false);
 
         notifier.notif("Testing notifier", NotificationType.FAILED, true);
 
@@ -82,7 +82,7 @@ describe("Test notifier", () => {
         const logger: LoggerInterface = new MockLogger();
 
         // Notifier
-        const notifier: NotifierInterface = new Notifier(logger, "", false);
+        const notifier: NotifierInterface = new Notifier(logger, false);
 
         Object.values(NotificationType).forEach((notificationType: NotificationType, index: number) => {
             notifier.notif("Testing notifier", notificationType);

@@ -1,5 +1,3 @@
-import type { ArgsParserInterface } from "~src/argsParser";
-import { ArgsParser } from "~src/argsParser";
 import type { LoggerInterface } from "~src/logger";
 import { Logger } from "~src/logger";
 import type { NotifierInterface } from "~src/notifier";
@@ -12,19 +10,21 @@ import { PROGRAM_CONFIG_FILENAME, PROGRAM_LOG_FILENAME, PROGRAM_NAME } from "~sr
 import { Shironet } from "./fetchers/shironet";
 import type { FileMetadata } from "~src/filetypes/common";
 import { getFileMetadata } from "~src/filetypes/common";
+import type { Args } from "~src/argsParser";
+import { parseArgs } from "~src/argsParser";
 
 // Make sure the log directory is there
 fsextra.ensureDirSync(path.resolve(process.env.ProgramData, PROGRAM_NAME));
 
 // CLI Args Parser
-const argsParser: ArgsParserInterface = new ArgsParser(process.argv);
+const { filename, dryRun, quiet }: Args = parseArgs(process.argv);
 
 // Logger
 const logFile: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_LOG_FILENAME);
 const logger: LoggerInterface = new Logger(logFile);
 
 // Notifier
-const notifier: NotifierInterface = new Notifier(logger, argsParser.getSnoreToastPath(), argsParser.isQuiet());
+const notifier: NotifierInterface = new Notifier(logger, quiet);
 
 // Config
 const confFile: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_CONFIG_FILENAME);
@@ -32,9 +32,9 @@ const config: Config = new Config(confFile, logger);
 logger.setLogLevel(config.getLogLevel());
 
 // handle single file
-const handleSingleFile = async (fullpath: string, fileExists: boolean): Promise<void> => {
+const handleSingleFile = async (fullpath: string, dryRun?: boolean): Promise<void> => {
     const split: string[] = fullpath.split("/");
-    const parentFolder: string = fileExists && split.length > 1 ? split[split.length - 2] : undefined;
+    const parentFolder: string = split[split.length - 2];
 
     // Parse metadata from file
     const metadata: FileMetadata = await getFileMetadata(fullpath);
@@ -48,12 +48,16 @@ const handleSingleFile = async (fullpath: string, fileExists: boolean): Promise<
     // Fetch lyrics
     const lyrics = await Shironet.getLyrics(metadata.artist, metadata.title);
 
-    // todo - save lyrics to file (with backup)
-    console.log(lyrics);
+    if (dryRun) {
+        console.log(lyrics);
+    }
+    else {
+        // todo - write file
+    }
 };
 
 // Batch
-const batchInterval = 3000; // milliseconds
+const batchInterval = 2500; // milliseconds
 let batchCounter = 0;
 const getWaitTimeMs = (): number => {
     batchCounter += 1;
@@ -78,7 +82,7 @@ const handleFolder = (dir: string): void => {
                 noFileHandled = false;
                 const waitTimeMs: number = getWaitTimeMs();
                 logger.verbose(`Waiting ${waitTimeMs}ms to handle file ${fullPath}`);
-                setTimeout(handleSingleFile, waitTimeMs, fullPath, true);
+                setTimeout(handleSingleFile, waitTimeMs, fullPath, dryRun);
             }
         }
     });
@@ -89,31 +93,22 @@ const handleFolder = (dir: string): void => {
 
 // Main
 logger.verbose(`Argv: ${process.argv.join(" ")}`);
-logger.verbose(`Quiet Mode: ${argsParser.isQuiet()}`);
-const input: string = argsParser.getInput();
-if (typeof input === "string") {
-    logger.info(`*** Looking for subtitle for "${input}" ***`);
-    const fullpath: string = input.replace(/\\/g, "/");
+logger.verbose(`Quiet Mode: ${quiet}`);
+if (typeof filename === "string") {
+    logger.info(`*** Looking for subtitle for "${filename}" ***`);
+    const fullpath: string = filename.replace(/\\/g, "/");
     try {
         if (fs.lstatSync(fullpath).isDirectory()) {
             handleFolder(fullpath);
         }
         else {
-            handleSingleFile(fullpath, false);
+            handleSingleFile(fullpath, dryRun);
         }
     }
     catch (e) {
-        if (e.code === "ENOENT") {
-            // no such file or directory - treat as file
-            handleSingleFile(fullpath, false);
-        }
-        else {
-            logger.error(`Cannot handle ${fullpath}`);
-        }
+        logger.error(`Cannot handle ${fullpath}`);
     }
 }
 else {
     notifier.notif("Missing input file", NotificationType.FAILED);
-    // tslint:disable-next-line:no-console
-    console.log(`Usage:${argsParser.getHelp()}`);
 }

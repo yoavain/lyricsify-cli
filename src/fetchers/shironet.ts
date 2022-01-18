@@ -1,7 +1,10 @@
 import type { LyricsFetcher } from "~src/fetchers/lyricsFetcherInterface";
+import type { OptionsOfTextResponseBody } from "got";
 import got from "got";
 
 const SHIRONET_BASE_URL = "https://shironet.mako.co.il";
+
+const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.11 Safari/537.36";
 
 const LYRICS_REGEXP = /<span\s+itemprop="Lyrics"\s+class="artist_lyrics_text">(?<lyrics>[^\\/]+)/gm;
 
@@ -30,7 +33,12 @@ export const Shironet: LyricsFetcher = {
     async getLyrics(artist: string, title: string): Promise<string> {
         // Search
         const songSearchUrl: string = getSongSearchUrl(artist, title);
-        const songSearchResulHtml = await got.get(songSearchUrl).then((res) => res.body);
+        const options: OptionsOfTextResponseBody = {
+            headers: {
+                "User-Agent": USER_AGENT
+            }
+        };
+        const songSearchResulHtml = await got.get(songSearchUrl, options).then((res) => res.body);
         const songRegex: RegExp = getSongRegex(artist, title);
         const songMatch = songRegex.exec(songSearchResulHtml);
         if (!songMatch || !songMatch.groups || !songMatch.groups.songurl) {
