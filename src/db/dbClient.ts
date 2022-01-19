@@ -18,36 +18,37 @@ const upsert = <T>(tableName: string, data: T) => {
 
 type LyricsRow = {
     artist: string, // key
-    track: string, // key
+    title: string, // key
 
     lyrics: string
 }
 
-export const getLyricsFromDb = async (artist: string, track: string): Promise<string> => {
+export const getLyricsFromDb = async (artist: string, title: string): Promise<string> => {
     return knexClient
         .withSchema(schema)
         .select<LyricsRow[]>("*")
-        .where({ artist, track })
+        .where({ artist, title })
         .from<LyricsRow>(lyricsTable)
         .then((result: LyricsRow[]) => {
             if (result?.length === 1) {
                 return result[0].lyrics;
             }
         })
-        .catch(() => {
+        .catch((error) => {
+            console.error(error);
             return null;
         });
 
 };
 
-export const putLyricsInDb = async (artist: string, track: string, lyrics: string): Promise<void> => {
-    return upsert<LyricsRow>(lyricsTable, { artist, track, lyrics });
+export const putLyricsInDb = async (artist: string, title: string, lyrics: string): Promise<void> => {
+    return upsert<LyricsRow>(lyricsTable, { artist, title, lyrics });
 };
 
-export const deleteLyricsFromDb = async (artist: string, track: string): Promise<void> => {
+export const deleteLyricsFromDb = async (artist: string, title: string): Promise<void> => {
     return knexClient
         .withSchema(schema)
-        .where({ artist, track })
+        .where({ artist, title })
         .from<LyricsRow>(lyricsTable)
         .del();
 };
