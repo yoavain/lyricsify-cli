@@ -20,6 +20,7 @@ type LyricsRow = {
     artist: string, // key
     title: string, // key
 
+    language: string,
     lyrics: string
 }
 
@@ -41,8 +42,8 @@ export const getLyricsFromDb = async (artist: string, title: string): Promise<st
 
 };
 
-export const putLyricsInDb = async (artist: string, title: string, lyrics: string): Promise<void> => {
-    return upsert<LyricsRow>(lyricsTable, { artist, title, lyrics });
+export const putLyricsInDb = async (artist: string, title: string, language: string, lyrics: string): Promise<void> => {
+    return upsert<LyricsRow>(lyricsTable, { artist, title, language, lyrics });
 };
 
 export const deleteLyricsFromDb = async (artist: string, title: string): Promise<void> => {

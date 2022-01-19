@@ -38,7 +38,7 @@ const handleSingleFile = async (fullpath: string, migrate?: boolean, dryRun?: bo
     const parentFolder: string = split[split.length - 2];
 
     // Parse metadata from file
-    const { artist, title, lyrics }: FileMetadata = await getFileMetadata(fullpath);
+    const { artist, title, language, lyrics }: FileMetadata = await getFileMetadata(fullpath);
 
     // Check if already exists
     if (lyrics) {
@@ -48,7 +48,7 @@ const handleSingleFile = async (fullpath: string, migrate?: boolean, dryRun?: bo
         if (migrate) {
             const lyricsFromCache = await getLyricsFromDb(artist, title);
             if (!lyricsFromCache) {
-                await putLyricsInDb(artist, title, lyrics);
+                await putLyricsInDb(artist, title, language, lyrics);
             }
         }
         return;

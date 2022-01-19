@@ -11,7 +11,7 @@ export const getLyrics: GetLyrics = async (artist: string, title: string): Promi
 
     const lyrics: string = await Shironet.getLyrics(artist, title);
     if (lyrics) {
-        await putLyricsInDb(artist, title, lyrics);
+        await putLyricsInDb(artist, title, "heb", lyrics);
         return lyrics;
     }
 };
