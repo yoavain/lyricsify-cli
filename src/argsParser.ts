@@ -9,7 +9,6 @@ export type Args = {
     verbose: boolean
     dryRun: boolean
     quiet: boolean
-    snoreToastPath: string
 }
 
 export const parseArgs = (argv: string[]): Args => {
@@ -30,6 +29,11 @@ export const parseArgs = (argv: string[]): Args => {
             type: "boolean",
             alias: "d",
             description: "dry-run"
+        })
+        .option("quiet", {
+            type: "boolean",
+            alias: "q",
+            description: "quiet"
         })
         .version("version", version)
         .help()

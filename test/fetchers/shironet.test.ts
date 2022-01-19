@@ -1,4 +1,4 @@
-import { Shironet } from "~src/fetchers/shironet";
+import { Shironet } from "~src/services/shironet";
 
 describe("Test Shironet", () => {
     beforeEach(() => {

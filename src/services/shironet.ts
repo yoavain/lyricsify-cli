@@ -1,6 +1,6 @@
-import type { LyricsFetcher } from "~src/fetchers/lyricsFetcherInterface";
 import type { OptionsOfTextResponseBody } from "got";
 import got from "got";
+import type { LyricsService } from "~src/services/interface";
 
 const SHIRONET_BASE_URL = "https://shironet.mako.co.il";
 
@@ -29,7 +29,7 @@ const cleanLyrics = (lyrics: string): string => {
     return lyrics.replace(/<br>/g, "\n").replace("<", "");
 };
 
-export const Shironet: LyricsFetcher = {
+export const Shironet: LyricsService = {
     async getLyrics(artist: string, title: string): Promise<string> {
         // Search
         const songSearchUrl: string = getSongSearchUrl(artist, title);

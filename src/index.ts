@@ -7,7 +7,7 @@ import * as fs from "fs";
 import * as fsextra from "fs-extra";
 import * as path from "path";
 import { PROGRAM_CONFIG_FILENAME, PROGRAM_LOG_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
-import { Shironet } from "./fetchers/shironet";
+import { Shironet } from "./services/shironet";
 import type { FileMetadata } from "~src/filetypes/common";
 import { getFileMetadata } from "~src/filetypes/common";
 import type { Args } from "~src/argsParser";

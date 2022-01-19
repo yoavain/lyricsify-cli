@@ -15,6 +15,7 @@ describe("test parse", () => {
         expect(args.filename).toEqual("file.mp3");
         expect(args.dryRun).toBeFalsy();
         expect(args.verbose).toBeFalsy();
+        expect(args.quiet).toBeFalsy();
     });
     it("test dry-run", () => {
         const args: Args = parseArgs(mockCmdArgs(["file.mp3", "--dry-run"]));
@@ -25,6 +26,11 @@ describe("test parse", () => {
         const args: Args = parseArgs(mockCmdArgs(["file.mp3", "--verbose"]));
         expect(args.filename).toEqual("file.mp3");
         expect(args.verbose).toBeTruthy();
+    });
+    it("test quiet", () => {
+        const args: Args = parseArgs(mockCmdArgs(["file.mp3", "--quiet"]));
+        expect(args.filename).toEqual("file.mp3");
+        expect(args.quiet).toBeTruthy();
     });
 
     it("test error", () => {
