@@ -34,8 +34,10 @@ export const Shironet: LyricsService = {
         // Search
         const songSearchUrl: string = getSongSearchUrl(artist, title);
         const options: OptionsOfTextResponseBody = {
+            decompress: true,
             headers: {
-                "User-Agent": USER_AGENT
+                "user-agent": USER_AGENT,
+                "cache-control": "max-age=0"
             }
         };
         const songSearchResulHtml = await got.get(songSearchUrl, options).then((res) => res.body);

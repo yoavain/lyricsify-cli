@@ -2,7 +2,7 @@ import { Shironet } from "~src/services/shironet";
 
 describe("Test Shironet", () => {
     beforeEach(() => {
-        jest.setTimeout(30000);
+        jest.setTimeout(15000);
     });
     afterEach(() => {
         jest.restoreAllMocks();
