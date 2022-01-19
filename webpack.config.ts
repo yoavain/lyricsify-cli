@@ -12,6 +12,9 @@ export const baseConfig: webpack.Configuration = {
         __filename: true,
         __dirname: true
     },
+    externals: {
+        knex: "sqlite3 knex"
+    },
     output: {
         path: path.join(__dirname, "_build"),
         filename: "index.js"
