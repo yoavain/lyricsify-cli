@@ -4,7 +4,7 @@ import type { IAudioMetadata } from "music-metadata";
 export type FileMetadata = {
     artist: string
     title: string
-    hasLyrics: boolean
+    lyrics: string
 }
 
 export type GetFileMetadata = (file: string) => Promise<FileMetadata>;
@@ -15,6 +15,6 @@ export const getFileMetadata: GetFileMetadata = async (file: string): Promise<Fi
     return {
         artist: audioMetadata.common?.artist,
         title: audioMetadata.common?.title,
-        hasLyrics: Boolean(audioMetadata.common?.lyrics?.length > 0)
+        lyrics: audioMetadata.common?.lyrics?.[0]
     };
 };

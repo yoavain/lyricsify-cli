@@ -7,17 +7,18 @@ import * as fs from "fs";
 import * as fsextra from "fs-extra";
 import * as path from "path";
 import { PROGRAM_CONFIG_FILENAME, PROGRAM_LOG_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
-import { Shironet } from "./services/shironet";
 import type { FileMetadata } from "~src/filetypes/common";
 import { getFileMetadata } from "~src/filetypes/common";
 import type { Args } from "~src/argsParser";
 import { parseArgs } from "~src/argsParser";
+import { getLyrics } from "~src/lyrics";
+import { getLyricsFromDb, putLyricsInDb } from "~src/db";
 
 // Make sure the log directory is there
 fsextra.ensureDirSync(path.resolve(process.env.ProgramData, PROGRAM_NAME));
 
 // CLI Args Parser
-const { filename, dryRun, quiet }: Args = parseArgs(process.argv);
+const { filename, dryRun, quiet, migrate }: Args = parseArgs(process.argv);
 
 // Logger
 const logFile: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_LOG_FILENAME);
@@ -32,24 +33,32 @@ const config: Config = new Config(confFile, logger);
 logger.setLogLevel(config.getLogLevel());
 
 // handle single file
-const handleSingleFile = async (fullpath: string, dryRun?: boolean): Promise<void> => {
+const handleSingleFile = async (fullpath: string, migrate?: boolean, dryRun?: boolean): Promise<void> => {
     const split: string[] = fullpath.split("/");
     const parentFolder: string = split[split.length - 2];
 
     // Parse metadata from file
-    const metadata: FileMetadata = await getFileMetadata(fullpath);
+    const { artist, title, lyrics }: FileMetadata = await getFileMetadata(fullpath);
 
     // Check if already exists
-    if (metadata.hasLyrics) {
+    if (lyrics) {
         notifier.notif("Lyrics already exist", NotificationType.WARNING);
+
+        // Check if we should migrate from file to db
+        if (migrate) {
+            const lyricsFromCache = await getLyricsFromDb(artist, title);
+            if (!lyricsFromCache) {
+                await putLyricsInDb(artist, title, lyrics);
+            }
+        }
         return;
     }
 
     // Fetch lyrics
-    const lyrics = await Shironet.getLyrics(metadata.artist, metadata.title);
+    const lyricsFromService = await getLyrics(artist, title);
 
     if (dryRun) {
-        console.log(lyrics);
+        console.log(lyricsFromService);
     }
     else {
         // todo - write file
@@ -82,7 +91,7 @@ const handleFolder = (dir: string): void => {
                 noFileHandled = false;
                 const waitTimeMs: number = getWaitTimeMs();
                 logger.verbose(`Waiting ${waitTimeMs}ms to handle file ${fullPath}`);
-                setTimeout(handleSingleFile, waitTimeMs, fullPath, dryRun);
+                setTimeout(handleSingleFile, waitTimeMs, fullPath, migrate, dryRun);
             }
         }
     });
@@ -91,24 +100,28 @@ const handleFolder = (dir: string): void => {
     }
 };
 
-// Main
-logger.verbose(`Argv: ${process.argv.join(" ")}`);
-logger.verbose(`Quiet Mode: ${quiet}`);
-if (typeof filename === "string") {
-    logger.info(`*** Looking for subtitle for "${filename}" ***`);
-    const fullpath: string = filename.replace(/\\/g, "/");
-    try {
-        if (fs.lstatSync(fullpath).isDirectory()) {
-            handleFolder(fullpath);
+const main = async () => {
+    logger.verbose(`Argv: ${process.argv.join(" ")}`);
+    logger.verbose(`Quiet Mode: ${quiet}`);
+    if (typeof filename === "string") {
+        logger.info(`*** Looking for subtitle for "${filename}" ***`);
+        const fullpath: string = filename.replace(/\\/g, "/");
+        try {
+            if (fs.lstatSync(fullpath).isDirectory()) {
+                await handleFolder(fullpath);
+            }
+            else {
+                await handleSingleFile(fullpath, migrate, dryRun);
+            }
         }
-        else {
-            handleSingleFile(fullpath, dryRun);
+        catch (e) {
+            logger.error(`Cannot handle ${fullpath}`);
         }
     }
-    catch (e) {
-        logger.error(`Cannot handle ${fullpath}`);
+    else {
+        notifier.notif("Missing input file", NotificationType.FAILED);
     }
-}
-else {
-    notifier.notif("Missing input file", NotificationType.FAILED);
-}
+};
+
+// Run main
+main().catch(console.error);

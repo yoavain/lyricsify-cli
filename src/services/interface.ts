@@ -1,4 +1,4 @@
-export type GetLyrics = (artist: string, track: string) => Promise<string>
+import type { GetLyrics } from "~src/lyrics";
 
 export interface LyricsService {
     getLyrics: GetLyrics

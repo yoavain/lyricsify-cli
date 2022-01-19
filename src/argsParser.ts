@@ -8,6 +8,7 @@ export type Args = {
     filename: string
     verbose: boolean
     dryRun: boolean
+    migrate: boolean
     quiet: boolean
 }
 
@@ -29,6 +30,11 @@ export const parseArgs = (argv: string[]): Args => {
             type: "boolean",
             alias: "d",
             description: "dry-run"
+        })
+        .option("migrate", {
+            type: "boolean",
+            alias: "m",
+            description: "migrate"
         })
         .option("quiet", {
             type: "boolean",

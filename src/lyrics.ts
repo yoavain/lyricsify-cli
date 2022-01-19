@@ -1,6 +1,7 @@
-import type { GetLyrics } from "~src/services";
 import { Shironet } from "~src/services";
 import { getLyricsFromDb, putLyricsInDb } from "~src/db";
+
+export type GetLyrics = (artist: string, track: string) => Promise<string>
 
 export const getLyrics: GetLyrics = async (artist: string, title: string): Promise<string> => {
     const lyricsFromCache = await getLyricsFromDb(artist, title);
