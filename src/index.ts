@@ -18,7 +18,7 @@ import { getLyricsFromDb, putLyricsInDb } from "~src/db";
 fsextra.ensureDirSync(path.resolve(process.env.ProgramData, PROGRAM_NAME));
 
 // CLI Args Parser
-const { filename, dryRun, quiet, migrate }: Args = parseArgs(process.argv);
+const { filename, dryRun, quiet, migrate, skipRemote }: Args = parseArgs(process.argv);
 
 // Logger
 const logFile: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_LOG_FILENAME);
@@ -33,7 +33,7 @@ const config: Config = new Config(confFile, logger);
 logger.setLogLevel(config.getLogLevel());
 
 // handle single file
-const handleSingleFile = async (fullpath: string, migrate?: boolean, dryRun?: boolean): Promise<void> => {
+const handleSingleFile = async (fullpath: string): Promise<void> => {
     const split: string[] = fullpath.split("/");
     const parentFolder: string = split[split.length - 2];
 
@@ -51,6 +51,11 @@ const handleSingleFile = async (fullpath: string, migrate?: boolean, dryRun?: bo
                 await putLyricsInDb(artist, title, language, lyrics);
             }
         }
+        return;
+    }
+
+    // Not fetching lyrics from remote
+    if (skipRemote) {
         return;
     }
 
@@ -91,7 +96,7 @@ const handleFolder = (dir: string): void => {
                 noFileHandled = false;
                 const waitTimeMs: number = getWaitTimeMs();
                 logger.verbose(`Waiting ${waitTimeMs}ms to handle file ${fullPath}`);
-                setTimeout(handleSingleFile, waitTimeMs, fullPath, migrate, dryRun);
+                setTimeout(handleSingleFile, waitTimeMs, fullPath);
             }
         }
     });
@@ -111,7 +116,7 @@ const main = async () => {
                 await handleFolder(fullpath);
             }
             else {
-                await handleSingleFile(fullpath, migrate, dryRun);
+                await handleSingleFile(fullpath);
             }
         }
         catch (e) {
