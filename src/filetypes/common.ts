@@ -14,8 +14,8 @@ export type WriteLyrics = (file: string) => Promise<void>;
 export const getFileMetadata: GetFileMetadata = async (file: string): Promise<FileMetadata> => {
     const audioMetadata: IAudioMetadata = await MusicMetadata.parseFile(file);
 
-    const artist: string = audioMetadata.common?.artist;
-    const title: string = audioMetadata.common?.title;
+    const artist: string = audioMetadata?.common?.artist;
+    const title: string = audioMetadata?.common?.title;
     
     if (!artist || !title) {
         throw new Error("Could not get artist or title from file");
@@ -24,7 +24,7 @@ export const getFileMetadata: GetFileMetadata = async (file: string): Promise<Fi
     let language: string;
     let lyrics: string;
     if (audioMetadata.format.container === "FLAC") {
-        const lyricsItem = audioMetadata?.native?.vorbis?.find((field) => field.id === "UNSYNCEDLYRICS").value;
+        const lyricsItem = audioMetadata?.native?.vorbis?.find((field) => field.id === "UNSYNCEDLYRICS")?.value;
         if (lyricsItem) {
             const index = lyricsItem.indexOf("||");
             if (index >= 0) {
@@ -38,11 +38,11 @@ export const getFileMetadata: GetFileMetadata = async (file: string): Promise<Fi
         }
     }
     else if (audioMetadata.format.container === "MPEG") {
-        const lyricsItem = audioMetadata?.native["ID3v2.3"].find((field) => field.id === "USLT").value;
+        const lyricsItem = audioMetadata?.native?.["ID3v2.3"]?.find((field) => field.id === "USLT")?.value;
         if (lyricsItem) {
             language = lyricsItem.language;
             lyrics = lyricsItem.text;
         }
     }
-    return { artist, title, language, lyrics};
+    return { artist, title, language, lyrics };
 };

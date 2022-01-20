@@ -34,44 +34,50 @@ logger.setLogLevel(config.getLogLevel());
 
 // handle single file
 const handleSingleFile = async (fullpath: string): Promise<void> => {
-    const split: string[] = fullpath.split("/");
-    const parentFolder: string = split[split.length - 2];
+    try {
+        const split: string[] = fullpath.split("/");
+        const parentFolder: string = split[split.length - 2];
 
-    // Parse metadata from file
-    const { artist, title, language, lyrics }: FileMetadata = await getFileMetadata(fullpath);
+        // Parse metadata from file
+        const { artist, title, language, lyrics }: FileMetadata = await getFileMetadata(fullpath);
 
-    // Check if already exists
-    if (lyrics) {
-        notifier.notif("Lyrics already exist", NotificationType.WARNING);
+        // Check if already exists
+        if (lyrics) {
+            notifier.notif("Lyrics already exist", NotificationType.WARNING);
 
-        // Check if we should migrate from file to db
-        if (migrate) {
-            const lyricsFromCache = await getLyricsFromDb(artist, title);
-            if (!lyricsFromCache) {
-                await putLyricsInDb(artist, title, language, lyrics);
+            // Check if we should migrate from file to db
+            if (migrate) {
+                const lyricsFromCache = await getLyricsFromDb(artist, title);
+                if (!lyricsFromCache) {
+                    await putLyricsInDb(artist, title, language, lyrics);
+                }
             }
+            return;
         }
-        return;
-    }
 
-    // Not fetching lyrics from remote
-    if (skipRemote) {
-        return;
-    }
+        // Not fetching lyrics from remote
+        if (skipRemote) {
+            return;
+        }
 
-    // Fetch lyrics
-    const lyricsFromService = await getLyrics(artist, title);
+        // Fetch lyrics
+        const lyricsFromService = await getLyrics(artist, title);
 
-    if (dryRun) {
-        console.log(lyricsFromService);
+        if (dryRun) {
+            console.log(lyricsFromService);
+        }
+        else {
+            // todo - write file
+        }
     }
-    else {
-        // todo - write file
+    catch (e) {
+        logger.error(`Cannot handle ${fullpath}`);
+        notifier.notif(`Cannot handle ${fullpath}`, NotificationType.WARNING);
     }
 };
 
 // Batch
-const batchInterval = 2500; // milliseconds
+const batchInterval = skipRemote ? 0 : 2500; // milliseconds
 let batchCounter = 0;
 const getWaitTimeMs = (): number => {
     batchCounter += 1;
