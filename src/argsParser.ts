@@ -9,6 +9,7 @@ export type Args = {
     verbose: boolean
     dryRun: boolean
     migrate: boolean
+    skipRemote: boolean
     quiet: boolean
 }
 
@@ -35,6 +36,11 @@ export const parseArgs = (argv: string[]): Args => {
             type: "boolean",
             alias: "m",
             description: "migrate"
+        })
+        .option("skip-remote", {
+            type: "boolean",
+            alias: "s",
+            description: "skip remote"
         })
         .option("quiet", {
             type: "boolean",
