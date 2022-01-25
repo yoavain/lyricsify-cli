@@ -43,6 +43,7 @@
         "yargs": "17.3.1"
     },
     "devDependencies": {
+        "@parcel/transformer-typescript-types": "2.2.1",
         "@tsconfig/node14": "1.0.1",
         "@types/cross-spawn": "6.0.2",
         "@types/fs-extra": "9.0.13",
