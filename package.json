@@ -6,7 +6,7 @@
     "main": "_build/index.js",
     "types": "_build/index.d.ts",
     "scripts": {
-        "build-parcel": "parcel build",
+        "build-parcel": "parcel build --log-level verbose --no-autoinstall",
         "postinstall": "git config --get core.hookspath || husky install",
         "build": "npm run eslint && npm run type-check && npm run test && npm run webpack && npm run nexe && npm run installer",
         "quick-build-exe": "npm run webpack && npm run nexe",
@@ -44,6 +44,7 @@
     },
     "devDependencies": {
         "@parcel/core": "2.2.1",
+        "@parcel/transformer-typescript-tsc": "2.2.1",
         "@parcel/transformer-typescript-types": "2.2.1",
         "@tsconfig/node14": "1.0.1",
         "@types/cross-spawn": "6.0.2",

@@ -5,7 +5,7 @@ import path from "path";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
 export const baseConfig: webpack.Configuration = {
-    mode: "production",
+    mode: "development",
     entry: "./src/index.ts",
     target: "node",
     node: {
@@ -13,7 +13,8 @@ export const baseConfig: webpack.Configuration = {
         __dirname: true
     },
     externals: {
-        knex: "sqlite3 knex"
+        knex: "knex",
+        sqlite3: "sqlite3"
     },
     output: {
         path: path.join(__dirname, "_build"),
@@ -44,6 +45,7 @@ export const baseConfig: webpack.Configuration = {
     },
     plugins: [
         new webpack.IgnorePlugin({ resourceRegExp: /\.(css|less)$/ }),
+        new webpack.IgnorePlugin({ resourceRegExp: /(sqlite3|pg|pg-query-stream|oracledb|mysql|mysql2|tedious)/ }),
         new CopyWebpackPlugin({
             patterns: [
                 {
