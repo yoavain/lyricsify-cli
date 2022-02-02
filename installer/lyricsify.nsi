@@ -6,13 +6,10 @@ Unicode True
 !define PRODUCT_NAME "Lyricsify"
 !define PRODUCT_VERSION "$%BUILD_VERSION%"
 !define PRODUCT_PUBLISHER "yoavain"
-!define PRODUCT_WEB_SITE "https://github.com/yoavain/screwzira-subtitle-downloader"
+!define PRODUCT_WEB_SITE "https://github.com/yoavain/lyricsify-cli"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_NAME}.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
-!define MkvProgID "mplayerc64.mkv"
-!define AviProgID "mplayerc64.avi"
-!define Mp4ProgID "mplayerc64.mp4"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -75,26 +72,20 @@ SectionEnd
 Section "Directory" SEC02
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  WriteRegStr HKCR "Folder\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
-  WriteRegStr HKCR "Folder\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
+  WriteRegStr HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
+  WriteRegStr HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
 SectionEnd
-Section "MKV" SEC03
+Section "MP3" SEC03
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  WriteRegStr HKLM "SOFTWARE\Classes\${MkvProgID}\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
-  WriteRegStr HKLM "SOFTWARE\Classes\${MkvProgID}\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
+  WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
+  WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
 SectionEnd
-Section "AVI" SEC04
+Section "FLAC" SEC04
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-    WriteRegStr HKLM "SOFTWARE\Classes\${AviProgID}\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
-    WriteRegStr HKLM "SOFTWARE\Classes\${AviProgID}\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
-SectionEnd
-Section "MP4" SEC05
-  SetOutPath "$INSTDIR"
-  SetOverwrite ifnewer
-    WriteRegStr HKLM "SOFTWARE\Classes\${Mp4ProgID}\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
-    WriteRegStr HKLM "SOFTWARE\Classes\${Mp4ProgID}\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
+    WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
+    WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
 SectionEnd
 
 Section -Post
@@ -113,9 +104,8 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC00} "Main $(^Name) app"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Notification icons for $(^Name)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Associate folders to $(^Name)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Associate .mkv files to $(^Name)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Associate .avi files to $(^Name)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Associate .mp4 files to $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Associate .mp3 files to $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Associate .flac files to $(^Name)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
@@ -142,9 +132,8 @@ Section Uninstall
   RMDir "$INSTDIR"
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
-  DeleteRegKey HKCR "Folder\shell\${PRODUCT_NAME}"
-  DeleteRegKey HKLM "SOFTWARE\Classes\${MkvProgID}\shell\${PRODUCT_NAME}"
-  DeleteRegKey HKLM "SOFTWARE\Classes\${AviProgID}\shell\${PRODUCT_NAME}"
-  DeleteRegKey HKLM "SOFTWARE\Classes\${Mp4ProgID}\shell\${PRODUCT_NAME}"
+  DeleteRegKey HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}"
+  DeleteRegKey HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}"
+  DeleteRegKey HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}"
   SetAutoClose true
 SectionEnd
