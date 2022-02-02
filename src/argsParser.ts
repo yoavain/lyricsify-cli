@@ -8,6 +8,7 @@ export type Args = {
     filename: string
     verbose: boolean
     dryRun: boolean
+    plexMode: boolean
     migrate: boolean
     skipRemote: boolean
     quiet: boolean
@@ -31,6 +32,11 @@ export const parseArgs = (argv: string[]): Args => {
             type: "boolean",
             alias: "d",
             description: "dry-run"
+        })
+        .option("plex-mode", {
+            type: "boolean",
+            alias: "p",
+            description: "plex-mode"
         })
         .option("migrate", {
             type: "boolean",
