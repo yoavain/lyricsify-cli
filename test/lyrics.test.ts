@@ -3,6 +3,9 @@ import * as dbClient from "~src/db/dbClient";
 import { Shironet } from "~src/services";
 
 describe("Test lyrics flow", () => {
+    beforeEach(() => {
+        console.log("Before");
+    });
     afterEach(() => {
         jest.restoreAllMocks();
     });
@@ -25,7 +28,7 @@ describe("Test lyrics flow", () => {
         expect(lyrics).toEqual("lyrics");
         expect(dbClient.getLyricsFromDb).toHaveBeenCalledWith("The Sign", "Ace of Base");
         expect(Shironet.getLyrics).toHaveBeenCalledWith("The Sign", "Ace of Base");
-        expect(dbClient.putLyricsInDb).toHaveBeenCalledWith("The Sign", "Ace of Base", "lyrics");
+        expect(dbClient.putLyricsInDb).toHaveBeenCalledWith("The Sign", "Ace of Base", "heb", "lyrics");
     });
     it("should handle miss", async () => {
         jest.spyOn(dbClient, "getLyricsFromDb").mockImplementation(async () => null);
