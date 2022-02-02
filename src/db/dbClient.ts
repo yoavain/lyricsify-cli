@@ -1,20 +1,12 @@
-import { test, development } from "../knexfile";
-import { knex } from "knex";
+import SQLiteTagSpawned from "sqlite-tag-spawned";
+import * as path from "path";
+
+const DB_FILE_PATH = path.join(__dirname, "..", "dev.sqlite3");
+const BIN_RELATIVE_PATH = "bin/sqlite/sqlite3.exe";
+const { get, query } = SQLiteTagSpawned(DB_FILE_PATH, { bin: BIN_RELATIVE_PATH });
 
 const schema = "main";
 const lyricsTable = "lyrics";
-
-const testMode = process.env.TEST_MODE === "true";
-const knexClient = knex(testMode ? test : development);
-
-const upsert = <T>(tableName: string, data: T) => {
-    const wrap = (key: string): string => `"${key.replace(/"/g, "\"\"")}"`;
-    return knexClient.raw("INSERT OR REPLACE INTO " +
-        tableName +
-        " (" + Object.keys(data).map(wrap).join(", ") +
-        ") VALUES (" +
-        Object.values(data).map(wrap).join(", ") + ")");
-};
 
 type LyricsRow = {
     artist: string, // key
@@ -25,31 +17,19 @@ type LyricsRow = {
 }
 
 export const getLyricsFromDb = async (artist: string, title: string): Promise<string> => {
-    return knexClient
-        .withSchema(schema)
-        .select<LyricsRow[]>("*")
-        .where({ artist, title })
-        .from<LyricsRow>(lyricsTable)
-        .then((result: LyricsRow[]) => {
-            if (result?.length === 1) {
-                return result[0].lyrics;
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-            return null;
-        });
-
+    try {
+        const row: LyricsRow = await get`SELECT * from ${schema}.${lyricsTable} WHERE artist=${artist} AND title=${title}`;
+        return row?.lyrics;
+    }
+    catch (e) {
+        return null;
+    }
 };
 
 export const putLyricsInDb = async (artist: string, title: string, language: string, lyrics: string): Promise<void> => {
-    return upsert<LyricsRow>(lyricsTable, { artist, title, language, lyrics });
+    return query`INSERT OR REPLACE INTO ${schema}.${lyricsTable} (artist,title,language,lyrics) VALUES (${artist},${title},${language},${lyrics})`;
 };
 
 export const deleteLyricsFromDb = async (artist: string, title: string): Promise<void> => {
-    return knexClient
-        .withSchema(schema)
-        .where({ artist, title })
-        .from<LyricsRow>(lyricsTable)
-        .del();
+    return query`${`DELETE FROM ${lyricsTable} WHERE artist=${artist} AND title=${title}`}`;
 };

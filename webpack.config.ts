@@ -12,10 +12,6 @@ export const baseConfig: webpack.Configuration = {
         __filename: true,
         __dirname: true
     },
-    externals: {
-        knex: "knex",
-        sqlite3: "sqlite3"
-    },
     output: {
         path: path.join(__dirname, "_build"),
         filename: "index.js"
@@ -51,6 +47,11 @@ export const baseConfig: webpack.Configuration = {
                 {
                     from: "node_modules/node-notifier/vendor/snoreToast/snoretoast-x64.exe",
                     to: "../dist/snoretoast-x64.exe",
+                    toType: "file"
+                },
+                {
+                    from: "bin/sqlite/sqlite3.exe",
+                    to: "../dist/bin/sqlite/sqlite3.exe",
                     toType: "file"
                 },
                 {
