@@ -1,6 +1,7 @@
 import * as path from "path";
+import { PROGRAM_DB_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
 
-const DB_FILE_PATH = path.join(__dirname, "..", "dev.sqlite3");
+const DB_FILE_PATH: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_DB_FILENAME);
 const BIN_RELATIVE_PATH = "bin/sqlite/sqlite3.exe";
 
 const schema = "main";
@@ -15,17 +16,33 @@ type LyricsRow = {
 }
 
 let dbClient;
-const getDbClient = () => {
+const getDbClient = async () => {
     if (!dbClient) {
+        // Init Client
         const SQLiteTagSpawned = require("sqlite-tag-spawned");
-        dbClient = new SQLiteTagSpawned(DB_FILE_PATH, BIN_RELATIVE_PATH);
+        const localDbClient = new SQLiteTagSpawned(DB_FILE_PATH, { bin: BIN_RELATIVE_PATH });
+
+        // Init DB file
+        const init = localDbClient.transaction();
+        init`CREATE TABLE IF NOT EXISTS ${schema}.${lyricsTable} (
+            artist TEXT NOT NULL,
+            title TEXT NOT NULL,
+            language TEXT NOT NULL,
+            lyrics TEXT NOT NULL,
+            PRIMARY KEY (artist, title)
+        )`;
+        await init.commit();
+        if (!dbClient) {
+            dbClient = localDbClient;
+        }
     }
     return dbClient;
 };
 
 export const getLyricsFromDb = async (artist: string, title: string): Promise<string> => {
     try {
-        const row: LyricsRow = await getDbClient().get`SELECT * from ${schema}.${lyricsTable} WHERE artist=${artist} AND title=${title}`;
+        const dbClient = await getDbClient();
+        const row: LyricsRow = await dbClient.get`SELECT * from ${schema}.${lyricsTable} WHERE artist=${artist} AND title=${title}`;
         return row?.lyrics;
     }
     catch (e) {
@@ -34,9 +51,11 @@ export const getLyricsFromDb = async (artist: string, title: string): Promise<st
 };
 
 export const putLyricsInDb = async (artist: string, title: string, language: string, lyrics: string): Promise<void> => {
-    return getDbClient().query`INSERT OR REPLACE INTO ${schema}.${lyricsTable} (artist,title,language,lyrics) VALUES (${artist},${title},${language},${lyrics})`;
+    const dbClient = await getDbClient();
+    return dbClient.query`INSERT OR REPLACE INTO ${schema}.${lyricsTable} (artist,title,language,lyrics) VALUES (${artist},${title},${language},${lyrics})`;
 };
 
 export const deleteLyricsFromDb = async (artist: string, title: string): Promise<void> => {
-    return getDbClient().query`${`DELETE FROM ${lyricsTable} WHERE artist=${artist} AND title=${title}`}`;
+    const dbClient = await getDbClient();
+    return dbClient.query`${`DELETE FROM ${lyricsTable} WHERE artist=${artist} AND title=${title}`}`;
 };
