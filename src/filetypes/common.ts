@@ -1,48 +1,44 @@
 import * as MusicMetadata from "music-metadata";
 import type { IAudioMetadata } from "music-metadata";
+import { FLAC } from "~src/filetypes/flac";
+import { MP3 } from "~src/filetypes/mp3";
 
-export type FileMetadata = {
+export type FileIdentifier = {
     artist: string
     title: string
-    language: string
-    lyrics: string
 }
+
+export type LyricsField = {
+    language?: string
+    lyrics?: string
+}
+
+export type FileMetadata = FileIdentifier & LyricsField;
 
 export type GetFileMetadata = (file: string) => Promise<FileMetadata>;
 export type WriteLyrics = (file: string) => Promise<void>;
 
-export const getFileMetadata: GetFileMetadata = async (file: string): Promise<FileMetadata> => {
-    const audioMetadata: IAudioMetadata = await MusicMetadata.parseFile(file);
-
+const parseFileIdentifier = (audioMetadata: IAudioMetadata): FileIdentifier => {
     const artist: string = audioMetadata?.common?.artist;
     const title: string = audioMetadata?.common?.title;
-    
+    return { artist, title };
+};
+
+export const getFileMetadata: GetFileMetadata = async (file: string): Promise<FileMetadata> => {
+    const audioMetadata: IAudioMetadata = await MusicMetadata.parseFile(file);
+    const { artist, title } = parseFileIdentifier(audioMetadata);
+
     if (!artist || !title) {
         throw new Error("Could not get artist or title from file");
     }
     
-    let language: string;
-    let lyrics: string;
-    if (audioMetadata.format.container === "FLAC") {
-        const lyricsItem = audioMetadata?.native?.vorbis?.find((field) => field.id === "UNSYNCEDLYRICS")?.value;
-        if (lyricsItem) {
-            const index = lyricsItem.indexOf("||");
-            if (index >= 0) {
-                language = lyricsItem.substr(0, index);
-                lyrics = lyricsItem.substr(index + 1);
-            }
-            else {
-                language = "";
-                lyrics = lyricsItem;
-            }
-        }
+    if (FLAC.isFlac(audioMetadata)) {
+        return { artist, title, ...FLAC.parseLyrics(audioMetadata) };
     }
-    else if (audioMetadata.format.container === "MPEG") {
-        const lyricsItem = audioMetadata?.native?.["ID3v2.3"]?.find((field) => field.id === "USLT")?.value;
-        if (lyricsItem) {
-            language = lyricsItem.language;
-            lyrics = lyricsItem.text;
-        }
+    else if (MP3.isMp3(audioMetadata)) {
+        return { artist, title, ...MP3.parseLyrics(audioMetadata) };
     }
-    return { artist, title, language, lyrics };
+    else {
+        return { artist, title };
+    }
 };
