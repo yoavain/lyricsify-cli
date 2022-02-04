@@ -1,22 +1,13 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import type { Config } from "~src/config";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require("../package.json");
+const { version } = require("../../package.json");
 
-export type Args = {
-    filename: string
-    verbose: boolean
-    dryRun: boolean
-    plexMode: boolean
-    migrate: boolean
-    skipRemote: boolean
-    quiet: boolean
-}
-
-export const parseArgs = (argv: string[]): Args => {
+export const getCliConfig = (argv: string[]): Config => {
     return yargs(hideBin(argv))
-        .command<Args>("* <filename>", "filename",
+        .command<Config>("* <filename>", "filename",
             (yargs) => {
                 yargs.positional("filename", {
                     describe: "filename",
@@ -43,10 +34,10 @@ export const parseArgs = (argv: string[]): Args => {
             alias: "m",
             description: "migrate"
         })
-        .option("skip-remote", {
+        .option("local", {
             type: "boolean",
-            alias: "s",
-            description: "skip remote"
+            alias: "l",
+            description: "local"
         })
         .option("quiet", {
             type: "boolean",

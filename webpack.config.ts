@@ -62,6 +62,10 @@ export const baseConfig: webpack.Configuration = {
                 {
                     from: "resources/notif-icons/",
                     to: "../dist/notif-icons/"
+                },
+                {
+                    from: "resources/config/lyricsify.env",
+                    to: "../dist/config/lyricsify.env"
                 }
             ]
         })

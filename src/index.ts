@@ -2,35 +2,31 @@ import type { LoggerInterface } from "~src/logger";
 import { Logger } from "~src/logger";
 import type { NotifierInterface } from "~src/notifier";
 import { NotificationType, Notifier } from "~src/notifier";
-import { Config } from "~src/config";
+import type { Config } from "~src/config";
+import { getConfig } from "~src/config";
 import * as fs from "fs";
 import * as fsextra from "fs-extra";
 import * as path from "path";
-import { PROGRAM_CONFIG_FILENAME, PROGRAM_LOG_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
+import { PROGRAM_LOG_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
 import type { FileMetadata } from "~src/filetypes/common";
 import { getFileMetadata } from "~src/filetypes/common";
-import type { Args } from "~src/argsParser";
-import { parseArgs } from "~src/argsParser";
 import { getLyrics } from "~src/lyrics";
 import { getLyricsFromDb, putLyricsInDb } from "~src/db";
+import { isFileSupported } from "~src/fileUtils";
 
 // Make sure the log directory is there
 fsextra.ensureDirSync(path.resolve(process.env.ProgramData, PROGRAM_NAME));
 
 // CLI Args Parser
-const { filename, dryRun, quiet, migrate, skipRemote }: Args = parseArgs(process.argv);
+const { filename, dryRun, migrate, local, quiet, verbose }: Config = getConfig(process.argv);
 
 // Logger
 const logFile: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_LOG_FILENAME);
 const logger: LoggerInterface = new Logger(logFile);
+logger.setLogLevel(verbose ? "verbose" : "info");
 
 // Notifier
 const notifier: NotifierInterface = new Notifier(logger, quiet);
-
-// Config
-const confFile: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_CONFIG_FILENAME);
-const config: Config = new Config(confFile, logger);
-logger.setLogLevel(config.getLogLevel());
 
 // handle single file
 const handleSingleFile = async (fullpath: string): Promise<void> => {
@@ -56,7 +52,7 @@ const handleSingleFile = async (fullpath: string): Promise<void> => {
         }
 
         // Not fetching lyrics from remote
-        if (skipRemote) {
+        if (local) {
             return;
         }
 
@@ -77,17 +73,13 @@ const handleSingleFile = async (fullpath: string): Promise<void> => {
 };
 
 // Batch
-const batchInterval = skipRemote ? 0 : 2500; // milliseconds
+const batchInterval = 2000; // milliseconds
 let batchCounter = 0;
 const getWaitTimeMs = (): number => {
     batchCounter += 1;
     return batchCounter * batchInterval;
 };
 
-const getFileExtension = (fullPath: string): string => {
-    const ext: string = path.extname(fullPath);
-    return ext?.length > 1 && ext.startsWith(".") ? ext.substr(1) : undefined;
-};
 
 const handleFolder = (dir: string): void => {
     let noFileHandled = true;
@@ -98,7 +90,7 @@ const handleFolder = (dir: string): void => {
             handleFolder(fullPath);
         }
         else {
-            if (config.getExtensions().includes(getFileExtension(fullPath))) {
+            if (isFileSupported(fullPath)) {
                 noFileHandled = false;
                 const waitTimeMs: number = getWaitTimeMs();
                 logger.verbose(`Waiting ${waitTimeMs}ms to handle file ${fullPath}`);

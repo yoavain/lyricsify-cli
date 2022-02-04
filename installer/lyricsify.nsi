@@ -87,6 +87,12 @@ Section "FLAC" SEC04
     WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
     WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
 SectionEnd
+Section "DefaultConfig" SEC05
+SetShellVarContext all
+SetOverwrite off
+SetOutPath "$LocalAppData\${PRODUCT_NAME}"
+File "..\dist\config\lyricsify.env"
+SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\${PRODUCT_NAME}_Uninst.exe"
@@ -106,6 +112,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Associate folders to $(^Name)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Associate .mp3 files to $(^Name)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Associate .flac files to $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Default config file to $(^Name)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit

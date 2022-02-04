@@ -1,6 +1,6 @@
 {
     "name": "lyricsify-cli",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Download Hebrew lyrics from Shironet",
     "source": "src/index.ts",
     "main": "_build/index.js",

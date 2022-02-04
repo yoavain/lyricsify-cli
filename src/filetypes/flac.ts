@@ -1,7 +1,7 @@
 import type { LyricsField, WriteLyrics } from "~src/filetypes/common";
 import type { IAudioMetadata } from "music-metadata";
 
-export const writeLyrics: WriteLyrics = async (file: string) => {
+const writeLyrics: WriteLyrics = async (file: string) => {
     // todo;
 };
 
