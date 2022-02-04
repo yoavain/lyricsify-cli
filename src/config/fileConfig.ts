@@ -8,11 +8,11 @@ require("dotenv").config({ path: DOTENV_FILE_PATH });
 
 export const getFileConfig = (): Omit<Config, "filename"> => {
     return {
-        plex: Boolean(process.env.LYRICS_PLEX_ENABLED),
-        migrate: Boolean(process.env.LYRICS_PLEX_ENABLED),
-        dryRun: Boolean(process.env.LYRICS_PLEX_ENABLED),
-        quiet: Boolean(process.env.LYRICS_PLEX_ENABLED),
-        local: Boolean(process.env.LYRICSIFY_LOCAL_MODE),
-        verbose: Boolean(process.env.LYRICS_PLEX_ENABLED)
+        plex: process.env.LYRICSIFY_PLEX_MODE === "true",
+        migrate: process.env.LYRICSIFY_MIGRATE_MODE === "true",
+        dryRun: process.env.LYRICSIFY_DRY_RUN_MODE === "true",
+        quiet: process.env.LYRICSIFY_QUIET_MODE === "true",
+        local: process.env.LYRICSIFY_LOCAL_MODE === "true",
+        verbose: process.env.LYRICSIFY_VERBOSE_MODE === "true"
     };
 };
