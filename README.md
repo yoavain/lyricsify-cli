@@ -2,7 +2,7 @@
 
 ## A tool for downloading Hebrew lyrics from Shironet
 
-Installer adds right-click context to folders and to mp3/flac file types (assuming file are associated with media player classic 64)
+Installer adds right-click context to folders and to mp3/flac file types
 
 ### Usage:
 
