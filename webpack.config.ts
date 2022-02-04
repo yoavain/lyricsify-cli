@@ -41,7 +41,6 @@ export const baseConfig: webpack.Configuration = {
     },
     plugins: [
         new webpack.IgnorePlugin({ resourceRegExp: /\.(css|less)$/ }),
-        new webpack.IgnorePlugin({ resourceRegExp: /(sqlite3|pg|pg-query-stream|oracledb|mysql|mysql2|tedious)/ }),
         new CopyWebpackPlugin({
             patterns: [
                 {
