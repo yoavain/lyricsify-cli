@@ -13,8 +13,8 @@ describe("Test Shironet", () => {
         const songSearchResultHtml: string = await fs.promises.readFile(path.join(__dirname, "../resources/shironet/songSearchResult.html"), "utf8");
         const songResultHtml: string = await fs.promises.readFile(path.join(__dirname, "../resources/shironet/songResult.html"), "utf8");
         jest.spyOn(got, "get")
-            .mockResolvedValueOnce(songSearchResultHtml)
-            .mockResolvedValueOnce(songResultHtml);
+            .mockResolvedValueOnce({ body: songSearchResultHtml })
+            .mockResolvedValueOnce({ body: songResultHtml });
 
         const lyrics: Lyrics = await Shironet.getLyrics("משינה", "שלג צח");
         expect(lyrics.lyrics.startsWith("הוא שוב יוצא אל המרפסת")).toBeTruthy();

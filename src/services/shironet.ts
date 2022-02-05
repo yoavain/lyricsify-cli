@@ -52,7 +52,7 @@ export const Shironet: LyricsService = {
 
         // Fetch
         const songUrl = `${SHIRONET_BASE_URL}${songMatch.groups.songurl}`;
-        const songResultHtml = await got.get(songUrl).then((res) => res.body);
+        const songResultHtml = await got.get(songUrl, options).then((res) => res.body);
         const lyrics = LYRICS_REGEXP.exec(songResultHtml);
         if (!lyrics || !lyrics.groups || !lyrics.groups.lyrics) {
             throw new Error("Lyrics not found");
