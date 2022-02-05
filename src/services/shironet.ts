@@ -43,17 +43,17 @@ export const Shironet: LyricsService = {
                 "cache-control": "max-age=0"
             }
         };
-        const songSearchResulHtml = await got.get(songSearchUrl, options).then((res) => res.body);
+        const songSearchResultHtml = await got.get(songSearchUrl, options).then((res) => res.body);
         const songRegex: RegExp = getSongRegex(artist, title);
-        const songMatch = songRegex.exec(songSearchResulHtml);
+        const songMatch = songRegex.exec(songSearchResultHtml);
         if (!songMatch || !songMatch.groups || !songMatch.groups.songurl) {
             throw new Error("Lyrics not found");
         }
 
         // Fetch
         const songUrl = `${SHIRONET_BASE_URL}${songMatch.groups.songurl}`;
-        const songResulHtml = await got.get(songUrl).then((res) => res.body);
-        const lyrics = LYRICS_REGEXP.exec(songResulHtml);
+        const songResultHtml = await got.get(songUrl).then((res) => res.body);
+        const lyrics = LYRICS_REGEXP.exec(songResultHtml);
         if (!lyrics || !lyrics.groups || !lyrics.groups.lyrics) {
             throw new Error("Lyrics not found");
         }

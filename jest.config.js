@@ -6,7 +6,7 @@ module.exports = {
     transform: {
         "^.+\\.ts$": "ts-jest"
     },
-    testRegex: "test/.*.test.ts$",
+    testRegex: "(test|e2e)/.*.test.ts$",
     moduleFileExtensions: ["ts", "js", "json", "node"],
     moduleNameMapper: {
         "^~src/(.*)": "<rootDir>/src/$1",

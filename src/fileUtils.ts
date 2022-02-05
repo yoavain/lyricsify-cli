@@ -30,5 +30,5 @@ export const fileExistsSync = (fullPath: string): boolean => {
 };
 
 export const writeFile = async (fullPath: string, data: string): Promise<void> => {
-    return fs.promises.writeFile(fullPath, data);
+    return fs.promises.writeFile(fullPath, data, { encoding: "utf8" });
 };

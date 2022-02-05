@@ -61,7 +61,7 @@ describe("Test file utils", () => {
             jest.spyOn(fs.promises, "writeFile").mockImplementation(async () => {/* do nothing */});
 
             await writeFile("/path/to/test.txt", "Data");
-            expect(fs.promises.writeFile).toHaveBeenCalledWith("/path/to/test.txt", "Data");
+            expect(fs.promises.writeFile).toHaveBeenCalledWith("/path/to/test.txt", "Data", { encoding: "utf8" });
         });
     });
 });
