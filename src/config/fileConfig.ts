@@ -1,6 +1,6 @@
 import * as path from "path";
 import { PROGRAM_DOTENV_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
-import type { Config } from "~src/config/common";
+import type { Config } from "~src/config";
 
 const DOTENV_FILE_PATH: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_DOTENV_FILENAME);
 // Read configuration from config file

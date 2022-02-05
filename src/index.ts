@@ -8,8 +8,9 @@ import * as fs from "fs";
 import * as fsextra from "fs-extra";
 import * as path from "path";
 import { PROGRAM_LOG_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
-import type { FileMetadata } from "~src/filetypes/common";
-import { getFileMetadata } from "~src/filetypes/common";
+import type { FileHandler, FileMetadata } from "~src/filetypes";
+import { getFileHandler, getFileMetadata } from "~src/filetypes";
+import type { Lyrics } from "~src/lyrics";
 import { getLyrics } from "~src/lyrics";
 import { getLyricsFromDb, putLyricsInDb } from "~src/db";
 import { isFileSupported } from "~src/fileUtils";
@@ -34,8 +35,10 @@ const handleSingleFile = async (fullpath: string): Promise<void> => {
         const split: string[] = fullpath.split("/");
         const parentFolder: string = split[split.length - 2];
 
+        const fileHandler: FileHandler= getFileHandler(fullpath);
+
         // Parse metadata from file
-        const { artist, title, language, lyrics }: FileMetadata = await getFileMetadata(fullpath);
+        const { artist, title, language, lyrics }: FileMetadata = await getFileMetadata(fullpath, fileHandler);
 
         // Check if already exists
         if (lyrics) {
@@ -43,9 +46,9 @@ const handleSingleFile = async (fullpath: string): Promise<void> => {
 
             // Check if we should migrate from file to db
             if (migrate) {
-                const lyricsFromCache = await getLyricsFromDb(artist, title);
+                const lyricsFromCache: Lyrics = await getLyricsFromDb(artist, title);
                 if (!lyricsFromCache) {
-                    await putLyricsInDb(artist, title, language, lyrics);
+                    await putLyricsInDb(artist, title, lyricsFromCache.language, lyricsFromCache.lyrics);
                 }
             }
             return;
@@ -57,7 +60,7 @@ const handleSingleFile = async (fullpath: string): Promise<void> => {
         }
 
         // Fetch lyrics
-        const lyricsFromService = await getLyrics(artist, title);
+        const lyricsFromService: Lyrics = await getLyrics(artist, title);
 
         if (dryRun) {
             console.log(lyricsFromService);
@@ -114,7 +117,9 @@ const main = async () => {
                 await handleFolder(fullpath);
             }
             else {
-                await handleSingleFile(fullpath);
+                if (isFileSupported(fullpath)) {
+                    await handleSingleFile(fullpath);
+                }
             }
         }
         catch (e) {

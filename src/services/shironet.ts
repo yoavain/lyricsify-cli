@@ -1,10 +1,13 @@
 import type { OptionsOfTextResponseBody } from "got";
 import got from "got";
-import type { LyricsService } from "~src/services/interface";
+import type { LyricsService } from "~src/services";
+import type { Lyrics } from "~src/lyrics";
 
 const SHIRONET_BASE_URL = "https://shironet.mako.co.il";
 
 const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.11 Safari/537.36";
+
+const LANGUAGE = "heb";
 
 const LYRICS_REGEXP = /<span\s+itemprop="Lyrics"\s+class="artist_lyrics_text">(?<lyrics>[^\\/]+)/gm;
 
@@ -30,7 +33,7 @@ const cleanLyrics = (lyrics: string): string => {
 };
 
 export const Shironet: LyricsService = {
-    async getLyrics(artist: string, title: string): Promise<string> {
+    async getLyrics(artist: string, title: string): Promise<Lyrics> {
         // Search
         const songSearchUrl: string = getSongSearchUrl(artist, title);
         const options: OptionsOfTextResponseBody = {
@@ -55,6 +58,9 @@ export const Shironet: LyricsService = {
             throw new Error("Lyrics not found");
         }
 
-        return cleanLyrics(lyrics.groups.lyrics);
+        return {
+            language: LANGUAGE,
+            lyrics: cleanLyrics(lyrics.groups.lyrics)
+        };
     }
 };

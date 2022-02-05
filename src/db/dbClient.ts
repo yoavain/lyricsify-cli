@@ -1,5 +1,6 @@
 import * as path from "path";
 import { PROGRAM_DB_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
+import type { Lyrics } from "~src/lyrics";
 
 const DB_FILE_PATH: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_DB_FILENAME);
 const BIN_RELATIVE_PATH = "bin/sqlite/sqlite3.exe";
@@ -39,11 +40,17 @@ const getDbClient = async () => {
     return dbClient;
 };
 
-export const getLyricsFromDb = async (artist: string, title: string): Promise<string> => {
+export const getLyricsFromDb = async (artist: string, title: string): Promise<Lyrics> => {
     try {
         const dbClient = await getDbClient();
         const row: LyricsRow = await dbClient.get`SELECT * from ${schema}.${lyricsTable} WHERE artist=${artist} AND title=${title}`;
-        return row?.lyrics;
+        if (!row) {
+            return null;
+        }
+        return {
+            language: row.language,
+            lyrics: row.lyrics
+        };
     }
     catch (e) {
         return null;

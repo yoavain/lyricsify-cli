@@ -1,5 +1,4 @@
-import { getCliConfig } from "~src/config/cliConfig";
-import { getFileConfig } from "~src/config/fileConfig";
+import { getCliConfig, getFileConfig } from "~src/config";
 
 export type Config = {
     filename: string

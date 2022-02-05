@@ -1,7 +1,6 @@
-import * as MusicMetadata from "music-metadata";
 import type { IAudioMetadata } from "music-metadata";
-import { FLAC } from "~src/filetypes/flac";
-import { MP3 } from "~src/filetypes/mp3";
+import * as MusicMetadata from "music-metadata";
+import type { FileHandler } from ".";
 
 export type FileIdentifier = {
     artist: string
@@ -15,7 +14,7 @@ export type LyricsField = {
 
 export type FileMetadata = FileIdentifier & LyricsField;
 
-export type GetFileMetadata = (file: string) => Promise<FileMetadata>;
+export type GetFileMetadata = (file: string, fileHandler: FileHandler) => Promise<FileMetadata>;
 export type WriteLyrics = (file: string) => Promise<void>;
 
 const parseFileIdentifier = (audioMetadata: IAudioMetadata): FileIdentifier => {
@@ -24,21 +23,17 @@ const parseFileIdentifier = (audioMetadata: IAudioMetadata): FileIdentifier => {
     return { artist, title };
 };
 
-export const getFileMetadata: GetFileMetadata = async (file: string): Promise<FileMetadata> => {
-    const audioMetadata: IAudioMetadata = await MusicMetadata.parseFile(file);
+export const getFileMetadata: GetFileMetadata = async (filePath: string, fileHandler: FileHandler): Promise<FileMetadata> => {
+    const audioMetadata: IAudioMetadata = await MusicMetadata.parseFile(filePath);
     const { artist, title } = parseFileIdentifier(audioMetadata);
 
     if (!artist || !title) {
         throw new Error("Could not get artist or title from file");
     }
-    
-    if (FLAC.isFlac(audioMetadata)) {
-        return { artist, title, ...FLAC.parseLyrics(audioMetadata) };
+
+    if (!fileHandler.verifyType(audioMetadata)) {
+        throw new Error("File type mismatch");
     }
-    else if (MP3.isMp3(audioMetadata)) {
-        return { artist, title, ...MP3.parseLyrics(audioMetadata) };
-    }
-    else {
-        return { artist, title };
-    }
+
+    return { artist, title, ...fileHandler.parseLyrics(audioMetadata) };
 };

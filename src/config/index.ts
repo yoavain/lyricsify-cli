@@ -1,4 +1,3 @@
 export * from "./cliConfig";
-export * from "./common";
+export * from "./commonConfig";
 export * from "./fileConfig";
-

@@ -11,7 +11,7 @@ describe("Test lyrics flow", () => {
     });
 
     it("should return lyrics from cache", async () => {
-        jest.spyOn(dbClient, "getLyricsFromDb").mockImplementation(async () => "lyrics");
+        jest.spyOn(dbClient, "getLyricsFromDb").mockImplementation(async () => ({ language: "heb", lyrics: "Lyrics" }));
         jest.spyOn(Shironet, "getLyrics");
 
         const lyrics = await getLyrics("The Sign", "Ace of Base");
@@ -22,7 +22,7 @@ describe("Test lyrics flow", () => {
     it("should return lyrics from service, and save into cache", async () => {
         jest.spyOn(dbClient, "getLyricsFromDb").mockImplementation(async () => null);
         jest.spyOn(dbClient, "putLyricsInDb").mockImplementation(async () => null);
-        jest.spyOn(Shironet, "getLyrics").mockImplementation(async () => "lyrics");
+        jest.spyOn(Shironet, "getLyrics").mockImplementation(async () => ({ language: "heb", lyrics: "Lyrics" }));
 
         const lyrics = await getLyrics("The Sign", "Ace of Base");
         expect(lyrics).toEqual("lyrics");
@@ -44,7 +44,7 @@ describe("Test lyrics flow", () => {
     it("should not call service if in local mode, and save into cache", async () => {
         jest.spyOn(dbClient, "getLyricsFromDb").mockImplementation(async () => null);
         jest.spyOn(dbClient, "putLyricsInDb").mockImplementation(async () => null);
-        jest.spyOn(Shironet, "getLyrics").mockImplementation(async () => "lyrics");
+        jest.spyOn(Shironet, "getLyrics").mockImplementation(async () => ({ language: "heb", lyrics: "Lyrics" }));
 
         const lyrics = await getLyrics("The Sign", "Ace of Base", true);
         expect(lyrics).not.toBeDefined();

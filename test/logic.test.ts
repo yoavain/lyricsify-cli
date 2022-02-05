@@ -5,6 +5,7 @@ import * as commonWriter from "~src/filetypes/commonWriter";
 import * as lyrics from "~src/lyrics";
 import { logic } from "~src/logic";
 import type { Config } from "~src/config";
+import type { FileHandler } from "~src/filetypes";
 
 const FULL_PATH = "test/logic.test.mp3";
 
@@ -14,7 +15,9 @@ describe("Test logic", () => {
         jest.spyOn(dbClient, "getLyricsFromDb").mockResolvedValue(null);
         jest.spyOn(dbClient, "putLyricsInDbIfNeeded").mockImplementation(async () => {});
 
-        await logic(FULL_PATH, { migrate: true } as Config);
+        const fileHandler: FileHandler = {} as FileHandler;
+        await logic(FULL_PATH, fileHandler, { migrate: true } as Config);
+
         expect(dbClient.putLyricsInDbIfNeeded).toHaveBeenCalledWith("artist", "title", "heb", "Lyrics");
     });
 
@@ -23,7 +26,9 @@ describe("Test logic", () => {
         jest.spyOn(dbClient, "getLyricsFromDb").mockResolvedValue(null);
         jest.spyOn(dbClient, "putLyricsInDbIfNeeded");
 
-        await logic(FULL_PATH, { migrate: false } as Config);
+        const fileHandler: FileHandler = {} as FileHandler;
+        await logic(FULL_PATH, fileHandler, { migrate: false } as Config);
+
         expect(dbClient.putLyricsInDbIfNeeded).not.toHaveBeenCalled();
     });
 
@@ -33,41 +38,49 @@ describe("Test logic", () => {
         jest.spyOn(commonWriter, "writePlexLyrics");
         jest.spyOn(commonWriter, "writeLyricsHeader");
 
-        await logic(FULL_PATH, { migrate: false } as Config);
+        const fileHandler: FileHandler = {} as FileHandler;
+        await logic(FULL_PATH, fileHandler, { migrate: false } as Config);
+
         expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
         expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
     });
 
     it("Should not do anything, when in dry-run mode and lyrics found", async () => {
         jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
-        jest.spyOn(lyrics, "getLyrics").mockResolvedValue("Lyrics");
+        jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: "heb", lyrics: "Lyrics" });
         jest.spyOn(commonWriter, "writePlexLyrics");
         jest.spyOn(commonWriter, "writeLyricsHeader");
 
-        await logic(FULL_PATH, { migrate: false, dryRun: true } as Config);
+        const fileHandler: FileHandler = {} as FileHandler;
+        await logic(FULL_PATH, fileHandler, { migrate: false, dryRun: true } as Config);
+
         expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
         expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
     });
 
     it("Should call plex writer, when in plex mode", async () => {
         jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
-        jest.spyOn(lyrics, "getLyrics").mockResolvedValue("Lyrics");
-        jest.spyOn(commonWriter, "writePlexLyrics");
+        jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: "heb", lyrics: "Lyrics" });
+        jest.spyOn(commonWriter, "writePlexLyrics").mockImplementation(async () => {});
         jest.spyOn(commonWriter, "writeLyricsHeader");
 
-        await logic(FULL_PATH, { migrate: false, dryRun: false, plex: true } as Config);
-        expect(commonWriter.writePlexLyrics).toHaveBeenCalledTimes(1);
+        const fileHandler: FileHandler = {} as FileHandler;
+        await logic(FULL_PATH, fileHandler, { migrate: false, dryRun: false, plex: true } as Config);
+
+        expect(commonWriter.writePlexLyrics).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
         expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
     });
 
     it("Should call headers writer, when not in plex mode", async () => {
         jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
-        jest.spyOn(lyrics, "getLyrics").mockResolvedValue("Lyrics");
+        jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: "heb", lyrics: "Lyrics" });
         jest.spyOn(commonWriter, "writePlexLyrics");
-        jest.spyOn(commonWriter, "writeLyricsHeader");
+        jest.spyOn(commonWriter, "writeLyricsHeader").mockImplementation(async () => {});
 
-        await logic(FULL_PATH, { migrate: false, dryRun: false, plex: false } as Config);
+        const fileHandler: FileHandler = {} as FileHandler;
+        await logic(FULL_PATH, fileHandler, { migrate: false, dryRun: false, plex: false } as Config);
+
         expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
-        expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(1);
+        expect(commonWriter.writeLyricsHeader).toHaveBeenCalledWith(FULL_PATH, fileHandler, "heb", "Lyrics");
     });
 });

@@ -9,7 +9,7 @@ export const checkMsbuildInPath = async (exit?: boolean): Promise<boolean> => {
     // Check for compiler in %PATH%
     const promises = process.env.path.split(";").map((p) => fs.pathExists(path.resolve(p, COMPILER)));
     const results: boolean[] = await Promise.all(promises);
-    const compilerFound: boolean = await results.find((result) => !!result);
+    const compilerFound: boolean = results.find((result) => !!result);
 
     if (exit && !compilerFound) {
         console.error(`You need "${COMPILER}" in your %PATH% in order to compile the launcher executable.`);

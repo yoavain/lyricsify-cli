@@ -1,11 +1,8 @@
-import type { LyricsField, WriteLyrics } from "~src/filetypes/common";
+import type { LyricsField } from "~src/filetypes/common";
 import type { IAudioMetadata } from "music-metadata";
+import type { FileHandler } from ".";
 
-const writeLyrics: WriteLyrics = async (file: string) => {
-    // todo;
-};
-
-const isFlac = (audioMetadata: IAudioMetadata): boolean => {
+const verifyType = (audioMetadata: IAudioMetadata): boolean => {
     return audioMetadata?.format?.container === "FLAC";
 };
 
@@ -26,7 +23,12 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
     };
 };
 
-export const FLAC = {
-    isFlac,
-    parseLyrics
+const writeLyrics = async (filePath: string, language: string, lyrics: string) => {
+    // todo;
+};
+
+export const FLAC: FileHandler = {
+    verifyType,
+    parseLyrics,
+    writeLyrics
 };
