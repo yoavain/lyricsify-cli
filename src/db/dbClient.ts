@@ -72,4 +72,4 @@ export const putLyricsInDbIfNeeded = async (artist: string, title: string, langu
     if (!foundInCache) {
         await putLyricsInDb(artist, title, language, lyrics);
     }
-}
+};
