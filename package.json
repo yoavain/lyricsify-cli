@@ -1,6 +1,6 @@
 {
     "name": "lyricsify-cli",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Download Hebrew lyrics from Shironet",
     "source": "src/index.ts",
     "main": "_build/index.js",
@@ -12,7 +12,8 @@
         "eslint": "eslint src/ test/ *.ts",
         "eslint:fix": "npm run eslint -- --fix",
         "prettier": "prettier --write *.json .eslintrc.json .prettierrc tsconfig.json tsconfig.build.json",
-        "test": "jest",
+        "test": "jest /test/",
+        "test:e2e": "jest /e2e/",
         "type-check": "tsc --build tsconfig.json",
         "prewebpack": "rimraf _build",
         "webpack": "webpack",

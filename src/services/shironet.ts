@@ -29,7 +29,7 @@ const getSongRegex = (artist: string, title: string): RegExp => {
 };
 
 const cleanLyrics = (lyrics: string): string => {
-    return lyrics.replace(/<br>/g, "\n").replace("<", "");
+    return lyrics.replace(/<br>/g, "\n").replace(/</g, "");
 };
 
 export const Shironet: LyricsService = {
