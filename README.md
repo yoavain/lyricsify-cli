@@ -1,4 +1,14 @@
-# Lyrics Downloader  <br>
+# ![](https://raw.githubusercontent.com/yoavain/lyricsify-cli/main/resources/icons/64x64.png) Lyrics Downloader  <br>
+
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/yoavain/lyricsify-cli.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yoavain/lyricsify-cli/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/yoavain/lyricsify-cli.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yoavain/lyricsify-cli/context:javascript)
+[![Actions Status](https://github.com/yoavain/lyricsify-cli/workflows/Node%20CI/badge.svg)](https://github.com/yoavain/lyricsify-cli/actions)
+![types](https://img.shields.io/npm/types/typescript.svg)
+![commit](https://img.shields.io/github/last-commit/yoavain/lyricsify-cli.svg)
+[![Known Vulnerabilities](https://snyk.io//test/github/yoavain/lyricsify-cli/badge.svg?targetFile=package.json)](https://snyk.io//test/github/yoavain/lyricsify-cli?targetFile=package.json)
+[![codecov](https://codecov.io/gh/yoavain/lyricsify-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/yoavain/lyricsify-cli)
+[![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com)
+![visitors](https://visitor-badge.glitch.me/badge?page_id=yoavain.lyricsify-cli)
 
 ## A tool for downloading Hebrew lyrics from Shironet
 
