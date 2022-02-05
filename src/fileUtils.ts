@@ -10,7 +10,7 @@ export const getFileExtension = (fullPath: string): string => {
 export const getPlexPath = (fullPath: string): string => {
     const { dir, name } = path.parse(fullPath);
     const plexPath: string = path.join(dir, `${name}.txt`);
-    if (plexPath === fullPath) {
+    if (plexPath === path.join(fullPath)) {
         throw new Error("Could not get plex path");
     }
     return plexPath;
