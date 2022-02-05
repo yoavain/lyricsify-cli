@@ -6,7 +6,7 @@
 ![types](https://img.shields.io/npm/types/typescript.svg)
 ![commit](https://img.shields.io/github/last-commit/yoavain/lyricsify-cli.svg)
 [![Known Vulnerabilities](https://snyk.io//test/github/yoavain/lyricsify-cli/badge.svg?targetFile=package.json)](https://snyk.io//test/github/yoavain/lyricsify-cli?targetFile=package.json)
-[![codecov](https://codecov.io/gh/yoavain/lyricsify-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/yoavain/lyricsify-cli)
+[![codecov](https://codecov.io/gh/yoavain/lyricsify-cli/branch/main/graph/badge.svg?token=38TTECCCWS)](https://codecov.io/gh/yoavain/lyricsify-cli)
 [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com)
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=yoavain.lyricsify-cli)
 
