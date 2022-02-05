@@ -1,5 +1,10 @@
 import type { FileHandler, LyricsField } from "~src/filetypes";
+import { SupportedFileExtension } from "~src/filetypes";
 import type { IAudioMetadata } from "music-metadata";
+
+const getExtension = (): SupportedFileExtension => {
+    return SupportedFileExtension.MP3;
+};
 
 const verifyType = (audioMetadata: IAudioMetadata): boolean => {
     return audioMetadata?.format?.container === "MPEG";
@@ -23,6 +28,7 @@ const writeLyrics = async (filePath: string, language: string, lyrics: string) =
 };
 
 export const MP3: FileHandler = {
+    getExtension,
     verifyType,
     parseLyrics,
     writeLyrics

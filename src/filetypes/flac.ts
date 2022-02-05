@@ -1,6 +1,11 @@
 import type { LyricsField } from "~src/filetypes/common";
 import type { IAudioMetadata } from "music-metadata";
-import type { FileHandler } from ".";
+import type { FileHandler } from "~src/filetypes";
+import { SupportedFileExtension } from "~src/filetypes";
+
+const getExtension = (): SupportedFileExtension => {
+    return SupportedFileExtension.FLAC;
+};
 
 const verifyType = (audioMetadata: IAudioMetadata): boolean => {
     return audioMetadata?.format?.container === "FLAC";
@@ -28,6 +33,7 @@ const writeLyrics = async (filePath: string, language: string, lyrics: string) =
 };
 
 export const FLAC: FileHandler = {
+    getExtension,
     verifyType,
     parseLyrics,
     writeLyrics

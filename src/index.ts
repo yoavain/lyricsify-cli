@@ -38,7 +38,7 @@ const handleSingleFile = async (fullpath: string): Promise<void> => {
         const fileHandler: FileHandler= getFileHandler(fullpath);
 
         // Parse metadata from file
-        const { artist, title, language, lyrics }: FileMetadata = await getFileMetadata(fullpath, fileHandler);
+        const { artist, title, lyrics }: FileMetadata = await getFileMetadata(fullpath, fileHandler);
 
         // Check if already exists
         if (lyrics) {

@@ -1,9 +1,10 @@
 import path from "path";
 import * as fs from "fs";
 import { EXTENSIONS } from "~src/commonConsts";
+import type { SupportedFileExtension } from "~src/filetypes";
 
 export const getFileExtension = (fullPath: string): string => {
-    return path.parse(fullPath).ext;
+    return path.parse(fullPath).ext?.toLowerCase();
 };
 
 export const getPlexPath = (fullPath: string): string => {
@@ -16,7 +17,7 @@ export const getPlexPath = (fullPath: string): string => {
 };
 
 export const isFileSupported = (fullPath: string): boolean => {
-    return EXTENSIONS.has(getFileExtension(fullPath)?.toLowerCase());
+    return EXTENSIONS.has(getFileExtension(fullPath) as SupportedFileExtension);
 };
 
 export const fileExistsSync = (fullPath: string): boolean => {

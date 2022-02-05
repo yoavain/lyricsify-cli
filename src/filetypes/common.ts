@@ -1,6 +1,6 @@
 import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
-import type { FileHandler } from ".";
+import type { FileHandler } from "~src/filetypes";
 
 export type FileIdentifier = {
     artist: string
