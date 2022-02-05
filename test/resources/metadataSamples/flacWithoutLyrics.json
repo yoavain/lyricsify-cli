@@ -1,0 +1,44 @@
+{
+    "format": {
+        "tagTypes": [
+            "vorbis"
+        ],
+        "trackInfo": [],
+        "container": "FLAC",
+        "codec": "FLAC",
+        "lossless": true,
+        "numberOfChannels": 2,
+        "bitsPerSample": 16,
+        "sampleRate": 44100,
+        "duration": 202,
+        "bitrate": 128000
+    },
+    "native": {
+        "vorbis": [
+            {
+                "id": "ARTIST",
+                "value": "Artist"
+            },
+            {
+                "id": "TITLE",
+                "value": "Title"
+            }
+        ]
+    },
+    "common": {
+        "track": {
+            "no": 1,
+            "of": null
+        },
+        "disk": {
+            "no": null,
+            "of": null
+        },
+        "movementIndex": {},
+        "title": "Title",
+        "artists": [
+            "Artist"
+        ],
+        "artist": "Artist"
+    }
+}

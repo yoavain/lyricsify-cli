@@ -1,0 +1,63 @@
+{
+    "format": {
+        "tagTypes": [
+            "ID3v2.3",
+            "ID3v1"
+        ],
+        "trackInfo": [],
+        "lossless": false,
+        "container": "MPEG",
+        "codec": "MPEG 1 Layer 3",
+        "sampleRate": 44100,
+        "numberOfChannels": 2,
+        "bitrate": 160000,
+        "codecProfile": "CBR",
+        "numberOfSamples": 19268352,
+        "duration": 436.92408163265304
+    },
+    "native": {
+        "ID3v2.3": [
+            {
+                "id": "TPE1",
+                "value": "Artist"
+            },
+            {
+                "id": "TIT2",
+                "value": "Title"
+            },
+            {
+                "id": "TYER",
+                "value": "2002"
+            }
+        ],
+        "ID3v1": [
+            {
+                "id": "title",
+                "value": "Title"
+            },
+            {
+                "id": "artist",
+                "value": "Artist"
+            }
+        ]
+    },
+    "quality": {
+        "warnings": []
+    },
+    "common": {
+        "track": {
+            "no": 1,
+            "of": null
+        },
+        "disk": {
+            "no": null,
+            "of": null
+        },
+        "movementIndex": {},
+        "artists": [
+            "Artist"
+        ],
+        "artist": "Artist",
+        "title": "Title"
+    }
+}
