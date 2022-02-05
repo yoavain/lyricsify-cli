@@ -59,3 +59,10 @@ export const deleteLyricsFromDb = async (artist: string, title: string): Promise
     const dbClient = await getDbClient();
     return dbClient.query`${`DELETE FROM ${lyricsTable} WHERE artist=${artist} AND title=${title}`}`;
 };
+
+export const putLyricsInDbIfNeeded = async (artist: string, title: string, language: string, lyrics: string): Promise<void> => {
+    const foundInCache = await getLyricsFromDb(artist, title);
+    if (!foundInCache) {
+        await putLyricsInDb(artist, title, language, lyrics);
+    }
+}
