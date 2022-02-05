@@ -48,8 +48,13 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
 
         if (plex) {
             // write file
-            await writePlexLyrics(filePath, fetchedLyrics.lyrics);
-            notifier?.notif("Lyrics written to .txt file", NotificationType.DOWNLOAD);
+            const plexLyricsWritten: boolean = await writePlexLyrics(filePath, fetchedLyrics.lyrics);
+            if (plexLyricsWritten) {
+                notifier?.notif("Lyrics written to .txt file", NotificationType.DOWNLOAD);
+            }
+            else {
+                notifier?.notif("Lyrics not written since .txt file already exists", NotificationType.WARNING);
+            }
         }
         else {
             // write headers

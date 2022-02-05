@@ -1,15 +1,14 @@
 import type { FileHandler } from "~src/filetypes";
 import { fileExistsSync, getPlexPath, writeFile } from "~src/fileUtils";
 
-export const writePlexLyrics = async (filePath: string, lyrics: string) => {
+export const writePlexLyrics = async (filePath: string, lyrics: string): Promise<boolean> => {
     const plexPath = getPlexPath(filePath);
-    if (!fileExistsSync(plexPath)) {
-        await writeFile(plexPath, lyrics);
+    if (fileExistsSync(plexPath)) {
+        return false;
     }
-    else {
-        // todo - logger + Notify
-        console.log("File already exists");
-    }
+
+    await writeFile(plexPath, lyrics);
+    return true;
 };
 
 export const writeLyricsHeader = async (filePath: string, fileHandler: FileHandler, language: string, lyrics: string) => {
