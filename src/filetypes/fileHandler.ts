@@ -1,6 +1,6 @@
 import type { IAudioMetadata } from "music-metadata";
 import type { LyricsField } from "~src/filetypes";
-import { SupportedFileExtension, FLAC, MP3 } from "~src/filetypes";
+import { FLAC, MP3, SupportedFileExtension } from "~src/filetypes";
 import { getFileExtension } from "~src/fileUtils";
 
 export type FileHandler = {
