@@ -22,20 +22,24 @@ describe("Test logic", () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title", language: "heb", lyrics: "Lyrics" });
             jest.spyOn(dbClient, "getLyricsFromDb").mockResolvedValue(null);
             jest.spyOn(dbClient, "putLyricsInDbIfNeeded").mockImplementation(async () => {});
+            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { migrate: true } as Config);
+            await handleFile(FULL_PATH, { migrate: true } as Config, undefined, notifier);
 
             expect(dbClient.putLyricsInDbIfNeeded).toHaveBeenCalledWith("artist", "title", "heb", "Lyrics");
+            expect(notifier.notif).toHaveBeenCalledWith("Lyrics found on file. Updating database", NotificationType.DOWNLOAD);
         });
 
         it("Should not migrate, when flag is false", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title", language: "heb", lyrics: "Lyrics" });
             jest.spyOn(dbClient, "getLyricsFromDb").mockResolvedValue(null);
             jest.spyOn(dbClient, "putLyricsInDbIfNeeded");
+            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { migrate: false } as Config);
+            await handleFile(FULL_PATH, { migrate: false } as Config, undefined, notifier);
 
             expect(dbClient.putLyricsInDbIfNeeded).not.toHaveBeenCalled();
+            expect(notifier.notif).toHaveBeenCalledWith("Lyrics already exist", NotificationType.WARNING);
         });
 
         it("Should not do anything, when in lyrics not found", async () => {
@@ -43,11 +47,13 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue(null);
             jest.spyOn(commonWriter, "writePlexLyrics");
             jest.spyOn(commonWriter, "writeLyricsHeader");
+            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { migrate: false } as Config);
+            await handleFile(FULL_PATH, { migrate: false } as Config, undefined, notifier);
 
             expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
+            expect(notifier.notif).toHaveBeenCalledWith("Lyrics not found", NotificationType.WARNING);
         });
 
         it("Should not do anything, when in dry-run mode and lyrics found", async () => {
@@ -55,23 +61,40 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: "heb", lyrics: "Lyrics" });
             jest.spyOn(commonWriter, "writePlexLyrics");
             jest.spyOn(commonWriter, "writeLyricsHeader");
+            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { migrate: false, dryRun: true } as Config);
+            await handleFile(FULL_PATH, { migrate: false, dryRun: true } as Config, undefined, notifier);
 
             expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
+            expect(notifier.notif).toHaveBeenCalledWith("Lyrics found. Dry-run mode", NotificationType.WARNING);
         });
 
-        it("Should call plex writer, when in plex mode", async () => {
+        it("Should call plex writer, when in plex mode, with writing", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: "heb", lyrics: "Lyrics" });
-            jest.spyOn(commonWriter, "writePlexLyrics").mockImplementation(async () => {});
+            jest.spyOn(commonWriter, "writePlexLyrics").mockImplementation(async () => true);
             jest.spyOn(commonWriter, "writeLyricsHeader");
+            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { migrate: false, dryRun: false, plex: true } as Config);
+            await handleFile(FULL_PATH, { migrate: false, dryRun: false, plex: true } as Config, undefined, notifier);
 
             expect(commonWriter.writePlexLyrics).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
+            expect(notifier.notif).toHaveBeenCalledWith("Lyrics written to .txt file", NotificationType.DOWNLOAD);
+        });
+        it("Should call plex writer, when in plex mode, without writing", async () => {
+            jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
+            jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: "heb", lyrics: "Lyrics" });
+            jest.spyOn(commonWriter, "writePlexLyrics").mockImplementation(async () => false);
+            jest.spyOn(commonWriter, "writeLyricsHeader");
+            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
+
+            await handleFile(FULL_PATH, { migrate: false, dryRun: false, plex: true } as Config, undefined, notifier);
+
+            expect(commonWriter.writePlexLyrics).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
+            expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
+            expect(notifier.notif).toHaveBeenCalledWith("Lyrics not written since .txt file already exists", NotificationType.WARNING);
         });
 
         it("Should call headers writer, when not in plex mode", async () => {
@@ -79,10 +102,12 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: "heb", lyrics: "Lyrics" });
             jest.spyOn(commonWriter, "writePlexLyrics");
             jest.spyOn(commonWriter, "writeLyricsHeader").mockImplementation(async () => {});
+            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { migrate: false, dryRun: false, plex: false } as Config);
+            await handleFile(FULL_PATH, { migrate: false, dryRun: false, plex: false } as Config, undefined, notifier);
 
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledWith(FULL_PATH, MP3, "heb", "Lyrics");
+            expect(notifier.notif).toHaveBeenCalledWith("Lyrics written to header", NotificationType.DOWNLOAD);
         });
     });
 
@@ -98,6 +123,7 @@ describe("Test logic", () => {
             jest.spyOn(fs, "lstatSync").mockReturnValue({ isDirectory: () => false } as Stats);
 
             await handleFolder(FOLDER_PATH, { migrate: false, dryRun: false, plex: false } as Config);
+
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(2);
             expect(utils.sleep).toHaveBeenCalledTimes(2);
         });
@@ -118,6 +144,7 @@ describe("Test logic", () => {
             } as Stats));
 
             await handleFolder(FOLDER_PATH, { migrate: false, dryRun: false, plex: false } as Config);
+
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(2);
             expect(utils.sleep).toHaveBeenCalledTimes(2);
         });
@@ -133,6 +160,7 @@ describe("Test logic", () => {
             const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
             await handleFolder(FOLDER_PATH, { migrate: false, dryRun: false, plex: false } as Config, undefined, notifier);
+
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(0);
             expect(utils.sleep).toHaveBeenCalledTimes(0);
             expect(notifier.notif).toHaveBeenCalledWith("No file handled", NotificationType.WARNING);
