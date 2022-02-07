@@ -7,13 +7,22 @@ export const getFileExtension = (fullPath: string): string => {
     return path.parse(fullPath).ext?.toLowerCase();
 };
 
-export const getPlexPath = (fullPath: string): string => {
+export const getFileWithAnotherExtension = (fullPath: string, ext: string): string => {
     const { dir, name } = path.parse(fullPath);
-    const plexPath: string = path.join(dir, `${name}.txt`);
-    if (plexPath === path.join(fullPath)) {
+    const newFile: string = path.join(dir, `${name}${ext}`);
+    if (newFile === path.join(fullPath)) {
+        throw new Error(`Incorrect input fullPath: ${fullPath}, ext: ${ext}`);
+    }
+    return newFile;
+};
+
+export const getPlexPath = (fullPath: string): string => {
+    try {
+        return getFileWithAnotherExtension(fullPath, ".txt");
+    }
+    catch (e) {
         throw new Error("Could not get plex path");
     }
-    return plexPath;
 };
 
 export const isFileSupported = (fullPath: string): boolean => {
@@ -31,4 +40,19 @@ export const fileExistsSync = (fullPath: string): boolean => {
 
 export const writeFile = async (fullPath: string, data: string): Promise<void> => {
     return fs.promises.writeFile(fullPath, data, { encoding: "utf8" });
+};
+
+export const copyFile = async (srcFullPath: string, destFullPath: string): Promise<void> => {
+    return fs.promises.copyFile(srcFullPath, destFullPath);
+};
+
+export const backupFile = async (fullPath: string): Promise<void> => {
+    const backupFile: string = getFileWithAnotherExtension(fullPath, ".bak");
+    if (fileExistsSync(backupFile)) {
+        // Backup file already exists - assuming it's ours...
+        return;
+    }
+    else {
+        await copyFile(fullPath, backupFile);
+    }
 };

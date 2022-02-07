@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { fileExistsSync, getFileExtension, getPlexPath, isFileSupported, writeFile } from "~src/fileUtils";
+import { backupFile, copyFile, fileExistsSync, getFileExtension, getFileWithAnotherExtension, getPlexPath, isFileSupported, writeFile } from "~src/fileUtils";
 
 describe("Test file utils", () => {
     describe("Test getFileExtension", () => {
@@ -13,7 +13,23 @@ describe("Test file utils", () => {
             expect(fileExtension).toBe(".mp3");
         });
     });
-
+    
+    describe("Test getFileWithAnotherExtension", () => {
+        it("Should return correct path", () => {
+            const plexPath: string = getFileWithAnotherExtension("/path/to/test.mp3", ".other");
+            expect(plexPath).toBe(path.join("/path/to/test.other"));
+        });
+        it("Should throw on invalid input", () => {
+            try {
+                getFileWithAnotherExtension("/path/to/test.txt", ".txt");
+                fail();
+            }
+            catch (e) {
+                // pass
+            }
+        });
+    });
+    
     describe("Test getPlexPath", () => {
         it("Should return correct path", () => {
             const plexPath: string = getPlexPath("/path/to/test.mp3");
@@ -62,6 +78,32 @@ describe("Test file utils", () => {
 
             await writeFile("/path/to/test.txt", "Data");
             expect(fs.promises.writeFile).toHaveBeenCalledWith("/path/to/test.txt", "Data", { encoding: "utf8" });
+        });
+    });
+
+    describe("Test copyFile", () => {
+        it("Should call fs.promises.copyFile correctly", async () => {
+            jest.spyOn(fs.promises, "copyFile").mockImplementation(async () => {/* do nothing */});
+
+            await copyFile("/path/to/src.txt", "/path/to/dest.txt");
+            expect(fs.promises.copyFile).toHaveBeenCalledWith("/path/to/src.txt", "/path/to/dest.txt");
+        });
+    });
+
+    describe("Test backupFile", () => {
+        it("Should call copyFile , when file doesn't exist", async () => {
+            jest.spyOn(fs, "existsSync").mockImplementation(() => false);
+            jest.spyOn(fs.promises, "copyFile").mockImplementation(async () => {/* do nothing */});
+
+            await backupFile("/path/to/test.mp3");
+            expect(fs.promises.copyFile).toHaveBeenCalledWith("/path/to/test.mp3", path.join("/path/to/test.bak"));
+        });
+        it("Should not call copyFile , when file exists", async () => {
+            jest.spyOn(fs, "existsSync").mockImplementation(() => true);
+            jest.spyOn(fs.promises, "copyFile").mockImplementation(async () => {/* do nothing */});
+
+            await backupFile("/path/to/test.mp3");
+            expect(fs.promises.copyFile).not.toHaveBeenCalled();
         });
     });
 });
