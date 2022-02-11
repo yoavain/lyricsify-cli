@@ -38,7 +38,7 @@ const writeLyrics = async (filePath: string, language: string, lyrics: string) =
         metaFlac.save();
     }
     else {
-        throw new Error("File already contains lyrics");
+        throw new Error("File already has lyrics");
     }
 };
 
