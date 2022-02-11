@@ -5,7 +5,7 @@ import type { Config } from "~src/config";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require("../../package.json");
 
-export type CliConfig = Pick<Config, "filename" | "snoreToastPath"> & Partial<Config>;
+export type CliConfig = Pick<Config, "filename"> & Partial<Config>;
 
 export const getCliConfig = (argv: string[]): CliConfig => {
     return yargs(hideBin(argv))
