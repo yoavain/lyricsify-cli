@@ -1,5 +1,6 @@
 import * as cliConfig from "~src/config/cliConfig";
 import * as fileConfig from "~src/config/fileConfig";
+import * as snoreToastConfig from "~src/config/snoreToastConfig";
 import { getConfig } from "~src/config";
 
 describe("Test common config", () => {
@@ -17,6 +18,9 @@ describe("Test common config", () => {
             local: false,
             verbose: false
         });
+        jest.spyOn(snoreToastConfig, "getSnoreToastConfig").mockReturnValue({
+            snoreToastPath: "path/to/snoreToast"
+        });
 
         expect(getConfig([])).toEqual({
             filename: "test/config/test.mp3",
@@ -25,7 +29,8 @@ describe("Test common config", () => {
             dryRun: false,  // cli override false
             quiet: true,   // default true
             local: false,
-            verbose: false
+            verbose: false,
+            snoreToastPath: "path/to/snoreToast"
         });
     });
 });
