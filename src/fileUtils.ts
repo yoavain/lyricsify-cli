@@ -57,3 +57,11 @@ export const backupFile = async (fullPath: string): Promise<void> => {
         await copyFile(fullPath, backupFile);
     }
 };
+
+export const ensureDir = async (fullPath: string): Promise<string> => {
+    return fs.promises.mkdir(fullPath, { recursive: true });  // Make sure the log directory is there
+};
+
+export const pathExists = (fullPath: string): Promise<boolean> => {
+    return fs.promises.access(fullPath).then(() => true).catch(() => false);
+};

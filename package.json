@@ -18,12 +18,11 @@
         "prewebpack": "rimraf _build",
         "webpack": "webpack",
         "nexe": "nexe -t windows-x64-14.15.3 -o dist/lyricsify.exe",
-        "check-msbuild": "node -r ts-node/register/transpile-only -e \"require(\"\"./launcher/launcherCompiler\"\").checkMsbuildInPath(true)\"",
+        "check-msbuild": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -e \"require(\"\"./launcher/launcherCompiler\"\").checkMsbuildInPath(true)\"",
         "rebuild-launcher": "msbuild launcher/launcher.csproj",
-        "start": "node -r ts-node/register/transpile-only src/index.ts",
+        "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register src/index.ts",
         "installer": "cd installer && cross-env BUILD_VERSION=$npm_package_version makensis lyricsify.nsi && cd ..",
-        "pre-commit": "lint-staged && git diff HEAD --exit-code --stat launcher/launcher.cs || npm run check-msbuild && npm run rebuild-launcher && git add resources/bin/lyricsify-launcher.exe",
-        "exec": "node -r ts-node/register/transpile-only -r tsconfig-paths/register src/index.ts"
+        "pre-commit": "lint-staged && git diff HEAD --exit-code --stat launcher/launcher.cs || npm run check-msbuild && npm run rebuild-launcher && git add resources/bin/lyricsify-launcher.exe"
     },
     "author": "yoavain",
     "license": "ISC",
@@ -32,7 +31,6 @@
         "npm": "<7"
     },
     "dependencies": {
-        "fs-extra": "9.1.0",
         "got": "11.8.3",
         "metaflac-js": "1.0.5",
         "music-metadata": "7.11.8",
@@ -45,7 +43,6 @@
     "devDependencies": {
         "@tsconfig/node14": "1.0.1",
         "@types/cross-spawn": "6.0.2",
-        "@types/fs-extra": "9.0.13",
         "@types/jest": "27.4.0",
         "@types/node": "14.18.10",
         "@typescript-eslint/eslint-plugin": "5.11.0",
