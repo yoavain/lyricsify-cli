@@ -1,7 +1,7 @@
 import type { SnoreToastConfig } from "~src/config";
 import { getSnoreToastConfig } from "~src/config";
 
-describe("test parse", () => {
+describe("test parse snoreToastConfig", () => {
     it("test dev run", () => {
         const snoreToastConfig: SnoreToastConfig = getSnoreToastConfig(["node.exe", "script.js", "file.mp3"]);
         expect(snoreToastConfig.snoreToastPath).toBeNull();
