@@ -57,7 +57,12 @@ Options:
 
 ---
 
-## To build:
+## To build
 
  * npm install
  * npm run build
+
+
+## Flow
+
+[Flow](./docs/FLOW.md)
