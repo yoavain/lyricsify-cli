@@ -4,6 +4,7 @@ import type { FileHandler } from "~src/filetypes";
 import { SupportedFileExtension } from "~src/filetypes";
 import MetaFlac from "metaflac-js";
 import { backupFile } from "~src/fileUtils";
+import { ERROR_FILE_ALREADY_HAS_LYRICS } from "~src/errors";
 
 const getExtension = (): SupportedFileExtension => {
     return SupportedFileExtension.FLAC;
@@ -38,7 +39,7 @@ const writeLyrics = async (filePath: string, language: string, lyrics: string) =
         metaFlac.save();
     }
     else {
-        throw new Error("File already has lyrics");
+        throw new Error(ERROR_FILE_ALREADY_HAS_LYRICS);
     }
 };
 

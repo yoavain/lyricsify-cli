@@ -4,6 +4,7 @@ import type { IAudioMetadata } from "music-metadata";
 import type NodeID3 from "node-id3";
 import { Promise as NodeID3Promise } from "node-id3";
 import { backupFile } from "~src/fileUtils";
+import { ERROR_FILE_ALREADY_HAS_LYRICS } from "~src/errors";
 
 const getExtension = (): SupportedFileExtension => {
     return SupportedFileExtension.MP3;
@@ -39,7 +40,7 @@ const writeLyrics = async (filePath: string, language: string, lyrics: string) =
         await NodeID3Promise.update(lyricsTags, filePath);
     }
     else {
-        throw new Error("File already has lyrics");
+        throw new Error(ERROR_FILE_ALREADY_HAS_LYRICS);
     }
 };
 

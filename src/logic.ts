@@ -11,6 +11,7 @@ import { isFileSupported } from "~src/fileUtils";
 import { sleep } from "~src/utils";
 import fs from "fs";
 import path from "path";
+import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
 
 const BATCH_SLEEP_DURATION = 1000; // milliseconds
 
@@ -37,7 +38,7 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
         const fetchedLyrics: Lyrics = await getLyrics(artist, title, local);
 
         if (!fetchedLyrics) {
-            notifier?.notif("Lyrics not found", NotificationType.WARNING);
+            notifier?.notif(ERROR_LYRICS_NOT_FOUND, NotificationType.WARNING);
             return;
         }
 
