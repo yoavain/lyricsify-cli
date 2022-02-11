@@ -22,46 +22,53 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
     const fileHandler: FileHandler = getFileHandler(filePath);
 
     // Parse metadata from file
-    const { artist, title, language, lyrics: lyricsFromMetadata }: FileMetadata = await getFileMetadata(filePath, fileHandler);
+    const fileMetadata: FileMetadata = await getFileMetadata(filePath, fileHandler);
+    const { artist, title } = fileMetadata;
+    let { language, lyrics } = fileMetadata;
+    const lyricsInHeader = Boolean(language && lyrics);
 
-    if (language && lyricsFromMetadata) {
+    if (lyricsInHeader) {
         if (migrate) {
-            await putLyricsInDbIfNeeded(artist, title, language, lyricsFromMetadata);
+            await putLyricsInDbIfNeeded(artist, title, language, lyrics);
             notifier?.notif("Lyrics found on file. Updating database", NotificationType.DOWNLOAD);
-        }
-        else {
-            notifier?.notif("Lyrics already exist", NotificationType.WARNING);
         }
     }
     else {
         // Fetch lyrics (from cache or service. put in cache if needed)
         const fetchedLyrics: Lyrics = await getLyrics(artist, title, local);
 
+        // No lyrics in file, and no lyrics from service
         if (!fetchedLyrics) {
             notifier?.notif(ERROR_LYRICS_NOT_FOUND, NotificationType.WARNING);
             return;
         }
 
-        if (dryRun) {
-            notifier?.notif("Lyrics found. Dry-run mode", NotificationType.WARNING);
-            return;
-        }
+        language = fetchedLyrics.language;
+        lyrics = fetchedLyrics.lyrics;
+    }
 
-        if (plex) {
-            // write file
-            const plexLyricsWritten: boolean = await writePlexLyrics(filePath, fetchedLyrics.lyrics);
-            if (plexLyricsWritten) {
-                notifier?.notif("Lyrics written to .txt file", NotificationType.DOWNLOAD);
-            }
-            else {
-                notifier?.notif("Lyrics not written since .txt file already exists", NotificationType.WARNING);
-            }
+    if (dryRun) {
+        notifier?.notif("Lyrics found. Dry-run mode", NotificationType.WARNING);
+        return;
+    }
+
+    if (plex) {
+        // write file
+        const plexLyricsWritten: boolean = await writePlexLyrics(filePath, lyrics);
+        if (plexLyricsWritten) {
+            notifier?.notif("Lyrics written to .txt file", NotificationType.DOWNLOAD);
         }
         else {
-            // write headers
-            await writeLyricsHeader(filePath, fileHandler, fetchedLyrics.language, fetchedLyrics.lyrics);
-            notifier?.notif("Lyrics written to header", NotificationType.DOWNLOAD);
+            notifier?.notif("Lyrics not written since .txt file already exists", NotificationType.WARNING);
         }
+    }
+    else if (!lyricsInHeader) {
+        // write headers
+        await writeLyricsHeader(filePath, fileHandler, language, lyrics);
+        notifier?.notif("Lyrics written to header", NotificationType.DOWNLOAD);
+    }
+    else {
+        notifier?.notif("Lyrics already exist", NotificationType.WARNING);
     }
 };
 
