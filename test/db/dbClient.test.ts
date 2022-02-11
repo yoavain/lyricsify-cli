@@ -1,5 +1,5 @@
 import type { LyricsRow } from "~src/db";
-import { getLyricsFromDb } from "~src/db";
+import { deleteLyricsFromDb, getLyricsFromDb, putLyricsInDb, putLyricsInDbIfNeeded } from "~src/db";
 import type { Lyrics } from "~src/lyrics";
 
 jest.mock("../../node_modules/sqlite-tag-spawned/cjs/utils", () => ({}));
@@ -53,12 +53,32 @@ describe("Test db client", () => {
         });
     });
     describe("Test putLyricsInDb", () => {
-        
+        it ("Should call query correctly", async () => {
+            await putLyricsInDb("artist", "title", "heb", "Lyrics");
+            expect(mockQuery).toHaveBeenCalledWith(
+                ["INSERT OR REPLACE INTO ", ".", " (artist,title,language,lyrics) VALUES (", ",", ",", ",", ")"],
+                "main", "lyrics", "artist", "title", "heb", "Lyrics"
+            );
+        });
     });
     describe("Test deleteLyricsFromDb", () => {
-        
+        it ("Should call query correctly", async () => {
+            await deleteLyricsFromDb("artist", "title");
+            expect(mockQuery).toHaveBeenCalledWith(
+                ["DELETE FROM ", ".", " WHERE artist=", " AND title=", ""], "main", "lyrics", "artist", "title");
+        });
     });
     describe("Test putLyricsInDbIfNeeded", () => {
-        
+        it("Should call query, when not in DB", async () => {
+            await putLyricsInDbIfNeeded("unknown", "unknown", "heb", "Lyrics");
+            expect(mockQuery).toHaveBeenCalledWith(
+                ["INSERT OR REPLACE INTO ", ".", " (artist,title,language,lyrics) VALUES (", ",", ",", ",", ")"],
+                "main", "lyrics", "unknown", "unknown", "heb", "Lyrics"
+            );
+        });
+        it("Should not call query, when already in DB", async () => {
+            await putLyricsInDbIfNeeded("artist", "title", "heb", "Lyrics");
+            expect(mockQuery).not.toHaveBeenCalled();
+        });
     });
 });
