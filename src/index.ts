@@ -5,10 +5,9 @@ import { NotificationType, Notifier } from "~src/notifier";
 import type { Config } from "~src/config";
 import { getConfig } from "~src/config";
 import * as fs from "fs";
-import * as fsextra from "fs-extra";
 import * as path from "path";
 import { PROGRAM_LOG_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
-import { isFileSupported } from "~src/fileUtils";
+import { ensureDir, isFileSupported } from "~src/fileUtils";
 import { handleFile, handleFolder } from "~src/logic";
 
 const main = async () => {
@@ -17,7 +16,7 @@ const main = async () => {
     const { filename, quiet, verbose, snoreToastPath } = config;
 
     // Logger
-    fsextra.ensureDirSync(path.resolve(process.env.ProgramData, PROGRAM_NAME)); // Make sure the log directory is there
+    await ensureDir(path.resolve(process.env.ProgramData, PROGRAM_NAME));  // Make sure the log directory is there
     const logFile: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_LOG_FILENAME);
     const logger: LoggerInterface = new Logger(logFile);
     logger.setLogLevel(verbose ? "verbose" : "info");

@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { backupFile, copyFile, fileExistsSync, getFileExtension, getFileWithAnotherExtension, getPlexPath, isFileSupported, writeFile } from "~src/fileUtils";
+import { backupFile, copyFile, ensureDir, fileExistsSync, getFileExtension, getFileWithAnotherExtension, getPlexPath, isFileSupported, pathExists, writeFile } from "~src/fileUtils";
 
 describe("Test file utils", () => {
     describe("Test getFileExtension", () => {
@@ -104,6 +104,36 @@ describe("Test file utils", () => {
 
             await backupFile("/path/to/test.mp3");
             expect(fs.promises.copyFile).not.toHaveBeenCalled();
+        });
+    });
+    
+    describe("Test ensureDir", () => {
+        it("Should call mkdir correctly", async () => {
+            jest.spyOn(fs.promises, "mkdir").mockImplementation(async () => "");
+
+            await ensureDir("/path/to/test.mp3");
+
+            expect(fs.promises.mkdir).toHaveBeenCalledWith("/path/to/test.mp3", { recursive: true });
+        });
+    });
+    describe("Test pathExists", () => {
+        it("Should return true when fs.access resolves", async () => {
+            jest.spyOn(fs.promises, "access").mockImplementation(async () => {/* do nothing */});
+
+            const isPathExists = await pathExists("/path/to/test.mp3");
+
+            expect(isPathExists).toBeTruthy();
+            expect(fs.promises.access).toHaveBeenCalledWith("/path/to/test.mp3");
+        });
+        it("Should return false when fs.access rejects", async () => {
+            jest.spyOn(fs.promises, "access").mockImplementation(async () => {
+                throw new Error("File not found");
+            });
+
+            const isPathExists = await pathExists("/path/to/test.mp3");
+
+            expect(isPathExists).toBeFalsy();
+            expect(fs.promises.access).toHaveBeenCalledWith("/path/to/test.mp3");
         });
     });
 });
