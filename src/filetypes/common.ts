@@ -15,7 +15,7 @@ export type LyricsField = {
 export type FileMetadata = FileIdentifier & LyricsField;
 
 export type GetFileMetadata = (file: string, fileHandler: FileHandler) => Promise<FileMetadata>;
-export type WriteLyrics = (file: string) => Promise<void>;
+export type WriteLyrics = (filePath: string, fileHandler: FileHandler, language: string, lyrics: string) => Promise<void>;
 
 const parseFileIdentifier = (audioMetadata: IAudioMetadata): FileIdentifier => {
     const artist: string = audioMetadata?.common?.artist;
@@ -36,4 +36,8 @@ export const getFileMetadata: GetFileMetadata = async (filePath: string, fileHan
     }
 
     return { artist, title, ...fileHandler.parseLyrics(audioMetadata) };
+};
+
+export const writeLyrics: WriteLyrics = async (filePath: string, fileHandler: FileHandler, language: string, lyrics: string) => {
+    return fileHandler.writeLyrics(filePath, language, lyrics);
 };
