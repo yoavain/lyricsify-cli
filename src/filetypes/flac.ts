@@ -2,6 +2,9 @@ import type { LyricsField } from "~src/filetypes/common";
 import type { IAudioMetadata } from "music-metadata";
 import type { FileHandler } from "~src/filetypes";
 import { SupportedFileExtension } from "~src/filetypes";
+import MetaFlac from "metaflac-js";
+import { backupFile } from "~src/fileUtils";
+import { ERROR_FILE_ALREADY_HAS_LYRICS } from "~src/errors";
 
 const getExtension = (): SupportedFileExtension => {
     return SupportedFileExtension.FLAC;
@@ -29,7 +32,15 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
 };
 
 const writeLyrics = async (filePath: string, language: string, lyrics: string) => {
-    // todo;
+    const metaFlac = new MetaFlac(filePath);
+    if (!metaFlac.getTag("UNSYNCEDLYRICS")) {
+        await backupFile(filePath);
+        metaFlac.setTag(`UNSYNCEDLYRICS=${language}||${lyrics}`);
+        metaFlac.save();
+    }
+    else {
+        throw new Error(ERROR_FILE_ALREADY_HAS_LYRICS);
+    }
 };
 
 export const FLAC: FileHandler = {

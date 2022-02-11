@@ -1,72 +1,61 @@
 /* eslint-disable security/detect-non-literal-require */
 import path from "path";
-import type { FileMetadata } from "~src/filetypes";
-import { FLAC, getFileMetadata, MP3 } from "~src/filetypes";
+import type { FileHandler } from "~src/filetypes";
+import { getFileMetadata, writeLyrics } from "~src/filetypes";
+import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
+import { ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE, ERROR_FILE_TYPE_MISMATCH } from "~src/errors";
 
 describe("Test common file types", () => {
     describe("Test getFileMetadata", () => {
-        it("Should parse correctly MP3 with lyrics", async () => {
-            const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/mp3WithLyrics.json");
-            jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => require(jsonLocation));
-            const metadata: FileMetadata = await getFileMetadata("/path/to/file.mp3", MP3);
-            expect(metadata).toEqual({
-                artist: "Artist",
-                title: "Title",
-                language: "eng",
-                lyrics: "Lyrics"
-            });
-        });
-        it("Should parse correctly MP3 without lyrics", async () => {
-            const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/mp3WithoutLyrics.json");
-            jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => require(jsonLocation));
-            const metadata: FileMetadata = await getFileMetadata("/path/to/file.mp3", MP3);
-            expect(metadata).toEqual({
-                artist: "Artist",
-                title: "Title"
-            });
-        });
-        it("Should parse correctly FLAC with lyrics", async () => {
-            const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/flacWithLyrics.json");
-            jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => require(jsonLocation));
-            const metadata: FileMetadata = await getFileMetadata("/path/to/file.mp3", FLAC);
-            expect(metadata).toEqual({
-                artist: "Artist",
-                title: "Title",
-                language: "eng",
-                lyrics: "Lyrics"
-            });
-        });
-        it("Should parse correctly FLAC without lyrics", async () => {
-            const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/flacWithoutLyrics.json");
-            jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => require(jsonLocation));
-            const metadata: FileMetadata = await getFileMetadata("/path/to/file.mp3", FLAC);
-            expect(metadata).toEqual({
-                artist: "Artist",
-                title: "Title"
-            });
-        });
-        it("Should throw when metadata is missing artist/title", async () => {
+        it("Should throw an error when mandatory fields are missing in metadata", async () => {
             const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/missingMandatory.json");
             jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => require(jsonLocation));
+
             try {
-                await getFileMetadata("/path/to/file.mp3", FLAC);
+                await getFileMetadata("/path/to/file.mp3", undefined);
                 fail();
             }
-            catch (e) {
-                // pass
+            catch (err) {
+                expect(err.message).toBe(ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE);
             }
         });
-        it("Should throw on fileHandler mismatch", async () => {
-            const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/flacWithoutLyrics.json");
+        
+        it("Should throw and error when verifyType returns false", async () => {
+            const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/mp3WithLyrics.json");
             jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => require(jsonLocation));
+
             try {
-                await getFileMetadata("/path/to/file.mp3", MP3);
+                await getFileMetadata("/path/to/file.mp3", { verifyType: () => false } as unknown as FileHandler);
                 fail();
             }
-            catch (e) {
-                // pass
+            catch (err) {
+                expect(err.message).toBe(ERROR_FILE_TYPE_MISMATCH);
             }
+        });
+
+        it("Should call parseLyrics when metadata is correct", async () => {
+            const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/mp3WithLyrics.json");
+            const metadata: IAudioMetadata = require(jsonLocation);
+            jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => metadata);
+            const mockParseLyrics = jest.fn().mockReturnValue({ language: "heb", lyrics: "Lyrics" });
+            
+            const response = await getFileMetadata("/path/to/file.mp3", { verifyType: () => true, parseLyrics: mockParseLyrics } as unknown as FileHandler);
+
+            expect(mockParseLyrics).toHaveBeenCalledWith(metadata);
+            expect(response).toEqual({ artist: "Artist", title: "Title", language: "heb", lyrics: "Lyrics" });
+        });
+    });
+
+    describe("Test writeLyrics", () => {
+        it("Should call handler writer", async () => {
+            const handler: FileHandler = {
+                writeLyrics: jest.fn()
+            } as unknown as FileHandler;
+
+            await writeLyrics("/path/to/file.mp3", handler, "heb", "Lyrics");
+
+            expect(handler.writeLyrics).toHaveBeenCalledWith("/path/to/file.mp3", "heb", "Lyrics");
         });
     });
 });

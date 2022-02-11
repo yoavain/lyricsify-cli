@@ -5,12 +5,13 @@ import * as commonWriter from "~src/filetypes/commonWriter";
 import * as lyrics from "~src/lyrics";
 import * as utils from "~src/utils";
 import type { Stats } from "fs";
-import fs from "fs";
 import { handleFile, handleFolder } from "~src/logic";
 import type { Config } from "~src/config";
 import { MP3 } from "~src/filetypes";
 import type { NotifierInterface } from "~src/notifier";
 import { NotificationType } from "~src/notifier";
+import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
+import fs from "fs";
 import path from "path";
 
 const FULL_PATH = "test/logic.test.mp3";
@@ -53,7 +54,7 @@ describe("Test logic", () => {
 
             expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith("Lyrics not found", NotificationType.WARNING);
+            expect(notifier.notif).toHaveBeenCalledWith(ERROR_LYRICS_NOT_FOUND, NotificationType.WARNING);
         });
 
         it("Should not do anything, when in dry-run mode and lyrics found", async () => {

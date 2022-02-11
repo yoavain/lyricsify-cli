@@ -2,6 +2,7 @@ import type { OptionsOfTextResponseBody } from "got";
 import got from "got";
 import type { LyricsService } from "~src/services";
 import type { Lyrics } from "~src/lyrics";
+import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
 
 const SHIRONET_BASE_URL = "https://shironet.mako.co.il";
 
@@ -47,7 +48,7 @@ export const Shironet: LyricsService = {
         const songRegex: RegExp = getSongRegex(artist, title);
         const songMatch = songRegex.exec(songSearchResultHtml);
         if (!songMatch || !songMatch.groups || !songMatch.groups.songurl) {
-            throw new Error("Lyrics not found");
+            throw new Error(ERROR_LYRICS_NOT_FOUND);
         }
 
         // Fetch
@@ -55,7 +56,7 @@ export const Shironet: LyricsService = {
         const songResultHtml = await got.get(songUrl, options).then((res) => res.body);
         const lyrics = LYRICS_REGEXP.exec(songResultHtml);
         if (!lyrics || !lyrics.groups || !lyrics.groups.lyrics) {
-            throw new Error("Lyrics not found");
+            throw new Error(ERROR_LYRICS_NOT_FOUND);
         }
 
         return {
