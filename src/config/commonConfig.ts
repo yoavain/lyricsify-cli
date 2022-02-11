@@ -1,4 +1,4 @@
-import { getCliConfig, getFileConfig } from "~src/config";
+import { getCliConfig, getFileConfig, getSnoreToastConfig } from "~src/config";
 
 export type Config = {
     filename: string
@@ -8,9 +8,10 @@ export type Config = {
     quiet: boolean
     local: boolean
     verbose: boolean
+    snoreToastPath: string
 }
 
 export const getConfig = (argv: string[]): Config => {
     // Cli overrides file config
-    return { ...getFileConfig(), ...getCliConfig(argv) };
+    return { ...getSnoreToastConfig(argv), ...getFileConfig(), ...getCliConfig(argv) };
 };

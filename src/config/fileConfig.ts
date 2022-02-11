@@ -6,7 +6,7 @@ const DOTENV_FILE_PATH: string = path.resolve(process.env.ProgramData, PROGRAM_N
 // Read configuration from config file
 require("dotenv").config({ path: DOTENV_FILE_PATH });
 
-export const getFileConfig = (): Omit<Config, "filename"> => {
+export const getFileConfig = (): Omit<Config, "filename" | "snoreToastPath"> => {
     return {
         plex: process.env.LYRICSIFY_PLEX_MODE === "true",
         migrate: process.env.LYRICSIFY_MIGRATE_MODE === "true",
