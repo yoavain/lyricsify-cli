@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import type { Config } from "~src/config";
 import { getFileConfig } from "~src/config";
 import path from "path";
