@@ -8,7 +8,7 @@ const BIN_RELATIVE_PATH = "bin/sqlite/sqlite3.exe";
 const schema = "main";
 const lyricsTable = "lyrics";
 
-type LyricsRow = {
+export type LyricsRow = {
     artist: string, // key
     title: string, // key
 
