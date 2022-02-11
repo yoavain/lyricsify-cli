@@ -8,7 +8,7 @@ const BIN_RELATIVE_PATH = "bin/sqlite/sqlite3.exe";
 const schema = "main";
 const lyricsTable = "lyrics";
 
-type LyricsRow = {
+export type LyricsRow = {
     artist: string, // key
     title: string, // key
 
@@ -64,7 +64,7 @@ export const putLyricsInDb = async (artist: string, title: string, language: str
 
 export const deleteLyricsFromDb = async (artist: string, title: string): Promise<void> => {
     const dbClient = await getDbClient();
-    return dbClient.query`${`DELETE FROM ${lyricsTable} WHERE artist=${artist} AND title=${title}`}`;
+    return dbClient.query`DELETE FROM ${schema}.${lyricsTable} WHERE artist=${artist} AND title=${title}`;
 };
 
 export const putLyricsInDbIfNeeded = async (artist: string, title: string, language: string, lyrics: string): Promise<void> => {
