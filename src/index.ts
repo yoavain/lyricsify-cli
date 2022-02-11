@@ -14,7 +14,7 @@ import { handleFile, handleFolder } from "~src/logic";
 const main = async () => {
     // CLI Args Parser
     const config: Config = getConfig(process.argv);
-    const { filename, quiet, verbose } = config;
+    const { filename, quiet, verbose, snoreToastPath } = config;
 
     // Logger
     fsextra.ensureDirSync(path.resolve(process.env.ProgramData, PROGRAM_NAME)); // Make sure the log directory is there
@@ -23,7 +23,7 @@ const main = async () => {
     logger.setLogLevel(verbose ? "verbose" : "info");
 
     // Notifier
-    const notifier: NotifierInterface = new Notifier(logger, quiet);
+    const notifier: NotifierInterface = new Notifier(logger, snoreToastPath, quiet);
 
     logger.verbose(`Argv: ${process.argv.join(" ")}`);
     logger.verbose(`Quiet Mode: ${quiet}`);
