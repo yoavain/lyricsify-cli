@@ -1,4 +1,5 @@
-import { NotificationType, Notifier, NotifierInterface } from "~src/notifier";
+import type { NotifierInterface } from "~src/notifier";
+import { NotificationType, Notifier } from "~src/notifier";
 import type { LoggerInterface } from "~src/logger";
 import { MockLogger } from "~test/__mocks__";
 
@@ -15,4 +16,4 @@ describe("Test notifier", () => {
         const notifier: NotifierInterface = new Notifier(logger, null, true);
         notifier.notif("Success", NotificationType.DOWNLOAD);
     });
-})
+});
