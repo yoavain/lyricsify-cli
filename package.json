@@ -28,7 +28,7 @@
     "license": "ISC",
     "engines": {
         "node": ">=14 <17",
-        "npm": "<7"
+        "npm": "<9"
     },
     "dependencies": {
         "got": "11.8.3",
