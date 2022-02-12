@@ -77,19 +77,19 @@ Section "Directory" SEC03
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   WriteRegStr HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
-  WriteRegStr HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
+  WriteRegStr HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" "%1"'
 SectionEnd
 Section "MP3" SEC04
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
-  WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
+  WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" "%1"'
 SectionEnd
 Section "FLAC" SEC05
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
     WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
-    WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
+    WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" "%1"'
 SectionEnd
 Section "DefaultConfig" SEC06
 SetShellVarContext all
