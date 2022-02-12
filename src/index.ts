@@ -25,7 +25,7 @@ const main = async () => {
     const notifier: NotifierInterface = new Notifier(logger, snoreToastPath, quiet);
 
     logger.verbose(`Argv: ${process.argv.join(" ")}`);
-    logger.verbose(`Quiet Mode: ${quiet}`);
+    logger.verbose(`Config: ${JSON.stringify(config)}`);
     if (typeof filename === "string") {
         logger.info(`*** Looking for subtitle for "${filename}" ***`);
         const fullpath: string = filename.replace(/\\/g, "/");
