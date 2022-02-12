@@ -1,4 +1,4 @@
-# ![](https://raw.githubusercontent.com/yoavain/lyricsify-cli/main/resources/icons/64x64_logo.png) Lyrics Downloader  <br>
+# ![](https://raw.githubusercontent.com/yoavain/lyricsify-cli/main/resources/icons/64x64_logo.png) Lyricsify - Lyrics Downloader  <br>
 
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/yoavain/lyricsify-cli.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yoavain/lyricsify-cli/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/yoavain/lyricsify-cli.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yoavain/lyricsify-cli/context:javascript)
