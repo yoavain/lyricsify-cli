@@ -31,7 +31,7 @@
         "npm": "<7"
     },
     "dependencies": {
-        "got": "11.8.3",
+        "got": "12.0.1",
         "metaflac-js": "1.0.5",
         "music-metadata": "7.11.8",
         "node-id3": "0.2.3",
