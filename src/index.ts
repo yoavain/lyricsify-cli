@@ -27,7 +27,7 @@ const main = async () => {
     logger.verbose(`Argv: ${process.argv.join(" ")}`);
     logger.verbose(`Config: ${JSON.stringify(config)}`);
     if (typeof filename === "string") {
-        logger.info(`*** Looking for subtitle for "${filename}" ***`);
+        logger.info(`*** Looking for lyrics for "${filename}" ***`);
         const fullpath: string = filename.replace(/\\/g, "/");
         try {
             if (fs.lstatSync(fullpath).isDirectory()) {
