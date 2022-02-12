@@ -61,7 +61,11 @@ File "..\dist\lyricsify.exe"
 File "..\dist\lyricsify-launcher.exe"
 File "..\dist\snoretoast-x64.exe"
 SectionEnd
-Section "Icons" SEC01
+Section "Sqlite" SEC01
+SetOutPath "$INSTDIR\bin\sqlite"
+File "..\dist\bin\sqlite\sqlite3.exe"
+SectionEnd
+Section "Icons" SEC02
 SetOutPath "$INSTDIR\notif-icons"
 File "..\dist\notif-icons\logo.png"
 File "..\dist\notif-icons\download.png"
@@ -69,25 +73,25 @@ File "..\dist\notif-icons\not-found.png"
 File "..\dist\notif-icons\failed.png"
 File "..\dist\notif-icons\warning.png"
 SectionEnd
-Section "Directory" SEC02
+Section "Directory" SEC03
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   WriteRegStr HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
   WriteRegStr HKLM "SOFTWARE\Classes\Folder\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
 SectionEnd
-Section "MP3" SEC03
+Section "MP3" SEC04
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
   WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.mp3\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
 SectionEnd
-Section "FLAC" SEC04
+Section "FLAC" SEC05
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
     WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}" "Icon" '$INSTDIR\lyricsify-launcher.exe,0'
     WriteRegStr HKLM "SOFTWARE\Classes\SystemFileAssociations\.flac\shell\${PRODUCT_NAME}\command" "" '"$INSTDIR\lyricsify-launcher.exe" input "%1"'
 SectionEnd
-Section "DefaultConfig" SEC05
+Section "DefaultConfig" SEC06
 SetShellVarContext all
 SetOverwrite off
 SetOutPath "$LocalAppData\${PRODUCT_NAME}"
@@ -108,16 +112,18 @@ SectionEnd
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC00} "Main $(^Name) app"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Notification icons for $(^Name)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Associate folders to $(^Name)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Associate .mp3 files to $(^Name)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Associate .flac files to $(^Name)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Default config file to $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Sqlite $(^Name) app"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Notification icons for $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Associate folders to $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Associate .mp3 files to $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Associate .flac files to $(^Name)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Default config file to $(^Name)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
   SectionSetFlags ${SEC00} 17
   SectionSetFlags ${SEC01} 17
+  SectionSetFlags ${SEC02} 17
 FunctionEnd
 
 Function un.onUninstSuccess
