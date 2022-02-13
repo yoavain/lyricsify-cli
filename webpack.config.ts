@@ -59,6 +59,11 @@ export const baseConfig: webpack.Configuration = {
                     toType: "file"
                 },
                 {
+                    from: "node_modules/puppeteer/.local-chromium/win64-961656/chrome-win/",
+                    to: "../dist/chrome-win/",
+                    filter: (filepath) => !filepath.endsWith("interactive_ui_tests.exe")
+                },
+                {
                     from: "resources/notif-icons/",
                     to: "../dist/notif-icons/"
                 },

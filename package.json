@@ -1,6 +1,6 @@
 {
     "name": "lyricsify-cli",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "Download Hebrew lyrics from Shironet",
     "source": "src/index.ts",
     "main": "_build/index.js",
@@ -15,7 +15,7 @@
         "test": "jest /test/",
         "test:e2e": "jest /e2e/",
         "type-check": "tsc --build tsconfig.json",
-        "prewebpack": "rimraf _build",
+        "prewebpack": "rimraf _build && rimraf dist",
         "webpack": "webpack",
         "nexe": "nexe -t windows-x64-14.15.3 -o dist/lyricsify.exe",
         "check-msbuild": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -e \"require(\"\"./launcher/launcherCompiler\"\").checkMsbuildInPath(true)\"",
@@ -36,6 +36,7 @@
         "music-metadata": "7.11.8",
         "node-id3": "0.2.3",
         "node-notifier": "10.0.1",
+        "puppeteer": "13.3.1",
         "sqlite-tag-spawned": "0.4.5",
         "winston": "3.6.0",
         "yargs": "17.3.1"
