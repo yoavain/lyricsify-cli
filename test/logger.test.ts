@@ -1,4 +1,4 @@
-import { Logger } from "../src/logger";
+import { Logger } from "~src/logger";
 
 const mockLog = jest.fn();
 jest.mock("winston", () => ({
