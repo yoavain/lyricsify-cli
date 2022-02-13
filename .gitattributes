@@ -1,1 +1,3 @@
 test/resources/** linguist-vendored
+bin/** linguist-vendored
+resources/bin/** linguist-generated
