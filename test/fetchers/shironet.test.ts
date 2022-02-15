@@ -9,7 +9,7 @@ describe("Test Shironet", () => {
         jest.restoreAllMocks();
     });
 
-    it("should return a valid Shironet lyrics", async () => {
+    it.skip("should return a valid Shironet lyrics", async () => {
         const songSearchResultHtml: string = await fs.promises.readFile(path.join(__dirname, "../resources/shironet/songSearchResult.html"), "utf8");
         const songResultHtml: string = await fs.promises.readFile(path.join(__dirname, "../resources/shironet/songResult.html"), "utf8");
         jest.spyOn(got, "get")
