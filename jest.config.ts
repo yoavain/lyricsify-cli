@@ -1,7 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
 
-module.exports = {
+import type { Config } from "@jest/types";
+
+const config: Config.InitialOptions = {
     clearMocks: true,
     transform: {
         "^.+\\.ts$": "ts-jest"
@@ -27,3 +29,5 @@ module.exports = {
     ],
     verbose: true
 };
+
+export default config;
