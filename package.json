@@ -36,7 +36,7 @@
         "music-metadata": "7.11.8",
         "node-id3": "0.2.3",
         "node-notifier": "10.0.1",
-        "sqlite-tag-spawned": "0.4.3",
+        "sqlite-tag-spawned": "0.4.5",
         "winston": "3.6.0",
         "yargs": "17.3.1"
     },
