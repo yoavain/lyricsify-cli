@@ -20,9 +20,11 @@ export const getBrowser = async (): Promise<Browser> => {
     return browserInstance;
 };
 
-process.on("exit", async () => {
-    if (browserInstance) {
-        await browserInstance.close();
-        browserInstance = null;
-    }
-});
+process.on("exit", 
+    /* istanbul ignore next */
+    async () => {
+        if (browserInstance) {
+            await browserInstance.close();
+            browserInstance = null;
+        }
+    });
