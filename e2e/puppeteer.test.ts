@@ -20,8 +20,8 @@ describe("Test Puppeteer on GitHub actions", () => {
             const browser: Browser = await getBrowser();
             page = await browser.newPage();
             await Promise.all([
-                page.goto("https://www.google.com/"),
-                page.waitForSelector(".lnXdpd")
+                page.goto("https://shironet.mako.co.il"),
+                page.waitForSelector(".header_main_bg")
             ]);
         }
         catch (e) {
