@@ -20,12 +20,11 @@ export const getElementText = async (element: ElementHandle): Promise<string> =>
 
 export const Shironet: LyricsService = {
     async getLyrics(artist: string, title: string): Promise<Lyrics> {
-        let browser: Browser;
-
+        let page: Page;
         try {
             // Open search page
-            browser = await getBrowser();
-            const page: Page = await browser.newPage();
+            const browser: Browser = await getBrowser();
+            page = await browser.newPage();
             const songSearchUrl: string = getSongSearchUrl(artist, title);
             await Promise.all([
                 page.goto(songSearchUrl),
@@ -71,6 +70,11 @@ export const Shironet: LyricsService = {
         catch (e) {
             console.error(e);
             throw new Error(ERROR_LYRICS_NOT_FOUND);
+        }
+        finally {
+            if (page) {
+                await page.close();
+            }
         }
     }
 };

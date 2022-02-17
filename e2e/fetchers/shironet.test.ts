@@ -1,11 +1,18 @@
 import { Shironet } from "~src/services/shironet";
 import type { Lyrics } from "~src/lyrics";
+import { getBrowser } from "~src/puppeteerUtils";
+import type { Browser } from "puppeteer";
 
 jest.setTimeout(60000);
 
 describe("Test Shironet", () => {
-    afterAll(() => {
+    let browser: Browser;
+    beforeAll(async () => {
+        browser = await getBrowser();
+    });
+    afterAll(async () => {
         jest.restoreAllMocks();
+        await browser.close();
     });
 
     it("should return a valid Shironet lyrics", async () => {
