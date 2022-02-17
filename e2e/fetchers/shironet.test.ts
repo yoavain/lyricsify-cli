@@ -4,7 +4,7 @@ import type { Lyrics } from "~src/lyrics";
 jest.setTimeout(60000);
 
 describe("Test Shironet", () => {
-    afterEach(() => {
+    afterAll(() => {
         jest.restoreAllMocks();
     });
 

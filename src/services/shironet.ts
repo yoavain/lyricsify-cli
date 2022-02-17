@@ -1,8 +1,8 @@
 import type { LyricsService } from "~src/services/interface";
 import type { Lyrics } from "~src/lyrics";
 import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
-import type { Browser, ElementHandle } from "puppeteer";
-import puppeteer from "puppeteer";
+import type { Browser, ElementHandle, Page } from "puppeteer";
+import { getBrowser } from "~src/puppeteerUtils";
 
 const SHIRONET_BASE_URL = "https://shironet.mako.co.il";
 
@@ -24,10 +24,13 @@ export const Shironet: LyricsService = {
 
         try {
             // Open search page
-            browser = await puppeteer.launch({ headless: true });
-            const page = await browser.newPage();
-            await page.goto(getSongSearchUrl(artist, title));
-            await page.waitForSelector(".search_results");
+            browser = await getBrowser();
+            const page: Page = await browser.newPage();
+            const songSearchUrl: string = getSongSearchUrl(artist, title);
+            await Promise.all([
+                page.goto(songSearchUrl),
+                page.waitForSelector(".search_results")
+            ]);
 
             // Find all search_link_name_big elements
             const searchElements: Array<ElementHandle> = await page.$$(".search_link_name_big");
@@ -68,9 +71,6 @@ export const Shironet: LyricsService = {
         catch (e) {
             console.error(e);
             throw new Error(ERROR_LYRICS_NOT_FOUND);
-        }
-        finally {
-            await browser?.close();
         }
     }
 };
