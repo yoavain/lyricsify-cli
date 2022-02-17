@@ -2,7 +2,7 @@ import { exec } from "child_process";
 
 jest.setTimeout(15000);
 
-const HOSTNAME = "shironet.mako.co.il";
+const HOSTNAME = "www.google.com";
 
 const pingHost = (target: string): Promise<void> => {
     return new Promise((resolve, reject) => {
