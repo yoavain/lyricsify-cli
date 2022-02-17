@@ -5,6 +5,9 @@ import type { Browser } from "puppeteer";
 
 jest.setTimeout(60000);
 
+/**
+ * These tests work only locally. They do not work on GitHub Actions, as site is blocked.
+ */
 describe("Test Shironet", () => {
     let browser: Browser;
     beforeAll(async () => {

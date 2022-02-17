@@ -27,7 +27,7 @@ describe("test parse", () => {
     });
     it("test all false", () => {
         const allFalseEnvFile: string = path.resolve(__dirname, "..", "resources", "lyricsify-all-false.env");
-        require("dotenv").config({ path: allFalseEnvFile });
+        require("dotenv").config({ path: allFalseEnvFile, override: true });
         const fileConfig: Omit<Config, "filename" | "snoreToastPath"> = getFileConfig();
         expect(fileConfig).toEqual({
             plex: false,
@@ -40,7 +40,7 @@ describe("test parse", () => {
     });
     it("test all true", () => {
         const allTrueEnvFile: string = path.resolve(__dirname, "..", "resources", "lyricsify-all-true.env");
-        require("dotenv").config({ path: allTrueEnvFile });
+        require("dotenv").config({ path: allTrueEnvFile, override: true });
         const fileConfig: Omit<Config, "filename" | "snoreToastPath"> = getFileConfig();
         expect(fileConfig).toEqual({
             plex: true,
