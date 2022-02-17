@@ -12,11 +12,17 @@ export const getBrowser = async (): Promise<Browser> => {
         if (!browserInstance) {
             browserInstance = browser;
         }
+        else {
+            // in case of a race condition
+            await browser.close();
+        }
     }
     return browserInstance;
 };
 
 process.on("exit", async () => {
-    await browserInstance?.close();
-    browserInstance = null;
+    if (browserInstance) {
+        await browserInstance.close();
+        browserInstance = null;
+    }
 });
