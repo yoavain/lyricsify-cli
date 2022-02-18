@@ -18,7 +18,7 @@ describe("Test Shironet", () => {
         await browser.close();
     });
 
-    it("should return a valid Shironet lyrics", async () => {
+    it.skip("should return a valid Shironet lyrics", async () => {
         const lyrics: Lyrics = await Shironet.getLyrics("משינה", "שלג צח");
         expect(lyrics.lyrics.startsWith("הוא שוב יוצא אל המרפסת")).toBeTruthy();
     });
