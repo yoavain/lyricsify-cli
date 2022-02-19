@@ -1,5 +1,5 @@
-import type { LyricsRow } from "~src/db";
-import { deleteLyricsFromDb, getLyricsFromDb, putLyricsInDb, putLyricsInDbIfNeeded } from "~src/db";
+import type { LyricsRow } from "~src/db/dbClient";
+import { deleteLyricsFromDb, getLyricsFromDb, putLyricsInDb, putLyricsInDbIfNeeded } from "~src/db/dbClient";
 import type { Lyrics } from "~src/types";
 import { Language } from "~src/types";
 

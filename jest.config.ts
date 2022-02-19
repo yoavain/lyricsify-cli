@@ -11,9 +11,9 @@ const config: Config.InitialOptions = {
     testRegex: "(test|e2e)/.*.test.ts$",
     moduleFileExtensions: ["ts", "js", "json", "node"],
     moduleNameMapper: {
-        "^~src/(.*)": "<rootDir>/src/$1",
-        "^~test/(.*)": "<rootDir>/test/$1",
-        "^~resources/(.*)": "<rootDir>/resources/$1"
+        "^~src/(.*)?": "<rootDir>/src/$1",
+        "^~test/(.*)?": "<rootDir>/test/$1",
+        "^~resources/(.*)?": "<rootDir>/resources/$1"
     },
     collectCoverage: true,
     coverageReporters: [

@@ -1,6 +1,6 @@
 import * as fileUtils from "~src/fileUtils";
-import type { FileHandler } from "~src/filetypes";
-import { writeLyricsHeader, writePlexLyrics } from "~src/filetypes";
+import type { FileHandler } from "~src/filetypes/fileHandler";
+import { writeLyricsHeader, writePlexLyrics } from "~src/filetypes/commonWriter";
 import { Language } from "~src/types";
 import path from "path";
 

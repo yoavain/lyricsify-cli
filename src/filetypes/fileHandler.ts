@@ -1,6 +1,8 @@
 import type { IAudioMetadata } from "music-metadata";
-import type { LyricsField } from "~src/filetypes";
-import { FLAC, MP3, SupportedFileExtension } from "~src/filetypes";
+import { MP3 } from "~src/filetypes/mp3";
+import type { LyricsField } from "~src/filetypes/common";
+import { SupportedFileExtension } from "~src/filetypes/types";
+import { FLAC } from "~src/filetypes/flac";
 import { getFileExtension } from "~src/fileUtils";
 import { ErrorMessages } from "~src/errors";
 import type { Language } from "~src/types";

@@ -2,7 +2,7 @@ import * as dbClient from "~src/db/dbClient";
 import type { Lyrics } from "~src/types";
 import { Language } from "~src/types";
 import { getLyrics, getLyricsLanguage } from "~src/lyrics";
-import { Shironet } from "~src/services";
+import { Shironet } from "~src/services/shironet";
 
 describe("Test lyrics", () => {
     beforeEach(() => {

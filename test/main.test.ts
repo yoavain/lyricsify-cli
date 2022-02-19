@@ -4,7 +4,7 @@ const { MockNotifier } = require("./__mocks__/notifier");
 import * as config from "~src/config/commonConfig";
 import * as logic from "~src/logic";
 import * as fileUtils from "~src/fileUtils";
-import type { Config } from "~src/config";
+import type { Config } from "~src/config/commonConfig";
 import { NotificationType } from "~src/notifier";
 import { main } from "~src/main";
 import type { Stats } from "fs";

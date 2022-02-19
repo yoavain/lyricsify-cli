@@ -1,7 +1,8 @@
 const MetaFlac = require("metaflac-js");
 import path from "path";
-import type { LyricsField } from "~src/filetypes";
-import { FLAC, SupportedFileExtension } from "~src/filetypes";
+import type { LyricsField } from "~src/filetypes/common";
+import { SupportedFileExtension } from "~src/filetypes/types";
+import { FLAC } from "~src/filetypes/flac";
 import * as fileUtils from "~src/fileUtils";
 import { Language } from "~src/types";
 
@@ -44,7 +45,7 @@ describe("Test FLAC file type", () => {
 
             const lyricsField: LyricsField = FLAC.parseLyrics(require(jsonLocation));
 
-            expect(lyricsField).toEqual({ language: Language.HEBREW, lyrics: "Lyrics" });
+            expect(lyricsField).toEqual({ language: Language.ENGLISH, lyrics: "Lyrics" });
         });
         it("Should parse correctly file without lyrics", () => {
             const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/flacWithoutLyrics.json");

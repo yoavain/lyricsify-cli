@@ -1,4 +1,4 @@
-import type { FileHandler } from "~src/filetypes";
+import type { FileHandler } from "~src/filetypes/fileHandler";
 import { fileExistsSync, getPlexPath, writeFile } from "~src/fileUtils";
 import type { Language } from "~src/types";
 

@@ -1,6 +1,6 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import type { Config } from "~src/config";
+import type { Config } from "~src/config/commonConfig";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require("../../package.json");

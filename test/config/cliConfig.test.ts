@@ -1,5 +1,5 @@
-import type { CliConfig } from "~src/config";
-import { getCliConfig } from "~src/config";
+import type { CliConfig } from "~src/config/cliConfig";
+import { getCliConfig } from "~src/config/cliConfig";
 
 const mockCmdArgs = (args: string[]): string[] => {
     return ["node.exe", "script.js", ...args];

@@ -1,7 +1,10 @@
-import type { Config } from "~src/config";
-import type { FileHandler, FileMetadata } from "~src/filetypes";
-import { getFileHandler, getFileMetadata, writeLyricsHeader, writePlexLyrics } from "~src/filetypes";
-import { putLyricsInDbIfNeeded } from "~src/db";
+import type { Config } from "~src/config/commonConfig";
+import type { FileHandler } from "~src/filetypes/fileHandler";
+import { getFileHandler } from "~src/filetypes/fileHandler";
+import type { FileMetadata } from "~src/filetypes/common";
+import { getFileMetadata } from "~src/filetypes/common";
+import { writeLyricsHeader, writePlexLyrics } from "~src/filetypes/commonWriter";
+import { putLyricsInDbIfNeeded } from "~src/db/dbClient";
 import type { Lyrics } from "~src/types";
 import { getLyrics } from "~src/lyrics";
 import type { NotifierInterface } from "~src/notifier";

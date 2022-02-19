@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-non-literal-require */
 import path from "path";
-import type { FileHandler } from "~src/filetypes";
-import { getFileMetadata, writeLyrics } from "~src/filetypes";
+import { getFileMetadata, writeLyrics } from "~src/filetypes/common";
+import type { FileHandler } from "~src/filetypes/fileHandler";
 import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
 import { ErrorMessages } from "~src/errors";

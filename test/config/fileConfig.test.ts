@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import type { Config } from "~src/config";
-import { getFileConfig } from "~src/config";
+import type { Config } from "~src/config/commonConfig";
+import { getFileConfig } from "~src/config/fileConfig";
 import path from "path";
 
 const SAVED_ENV = process.env;
