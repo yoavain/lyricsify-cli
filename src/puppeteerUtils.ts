@@ -43,6 +43,10 @@ export const clickElement = async (page: Page, element: ElementHandle, selector:
     await page.waitForSelector(selector);
 };
 
+export const getPageUrl = (page: Page): string => {
+    return page.url();
+};
+
 export const closePage = async (page: Page): Promise<void> => {
     await page.close();
 };

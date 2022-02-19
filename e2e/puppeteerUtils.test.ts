@@ -1,4 +1,4 @@
-import { clickElement, closePage, findElements, getBrowser, getElementText, pageLoad } from "~src/puppeteerUtils";
+import { clickElement, closePage, findElements, getBrowser, getElementText, getPageUrl, pageLoad } from "~src/puppeteerUtils";
 import type { Browser, ElementHandle, Page } from "puppeteer";
 
 jest.setTimeout(60000);
@@ -17,6 +17,9 @@ describe("Test PuppeteerUtils", () => {
         let page: Page;
         try {
             page = await pageLoad("https://www.wikipedia.org/", ".central-textlogo-wrapper");
+
+            const pageUrl: string = getPageUrl(page);
+            expect(pageUrl).toBe("https://www.wikipedia.org/");
 
             const elements: Array<ElementHandle> = await findElements(page, ".link-box");
             expect(elements.length).toBeGreaterThan(0);

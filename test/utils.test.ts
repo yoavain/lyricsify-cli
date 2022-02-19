@@ -1,4 +1,4 @@
-import { chunkToPairs, sleep } from "~src/utils";
+import { chunkToPairs, hasHebrewChars, sleep } from "~src/utils";
 
 describe("Test utils", () => {
     describe("Test sleep", () => {
@@ -28,6 +28,15 @@ describe("Test utils", () => {
                 [5, 6],
                 [7, 8]
             ]);
+        });
+    });
+
+    describe("Test hasHebrewChars", () => {
+        it("Should return true", () => {
+            expect(hasHebrewChars("אבג")).toBe(true);
+        });
+        it("Should return false", () => {
+            expect(hasHebrewChars("abc")).toBe(false);
         });
     });
 });

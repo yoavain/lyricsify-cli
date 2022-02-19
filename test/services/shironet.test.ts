@@ -1,12 +1,32 @@
 import * as puppeteerUtils from "~src/puppeteerUtils";
 import type { Lyrics } from "~src/types";
-import { Shironet } from "~src/services/shironet";
+import { Language } from "~src/types";
+import { getLanguageFromUrl, Shironet } from "~src/services/shironet";
 import type { ElementHandle, Page } from "puppeteer";
 import { ErrorMessages } from "~src/errors";
 
 describe("Test Shironet", () => {
     afterEach(() => {
         jest.restoreAllMocks();
+    });
+
+    describe("Test getLanguageFromUrl", () => {
+        it("Should return Hebrew", () => {
+            const lang: Language = getLanguageFromUrl("https://shironet.mako.co.il/artist?type=lyrics&lang=1&prfid=686&wrkid=3063");
+
+            expect(lang).toBe(Language.HEBREW);
+        });
+        it("Should return English", () => {
+            const lang: Language = getLanguageFromUrl("https://shironet.mako.co.il/artist?type=lyrics&lang=2&prfid=686&wrkid=3063");
+
+            expect(lang).toBe(Language.ENGLISH);
+
+        });
+        it("Should return Hebrew as default", () => {
+            const lang: Language = getLanguageFromUrl("https://shironet.mako.co.il/artist?type=lyrics&prfid=686&wrkid=3063");
+
+            expect(lang).toBe(Language.HEBREW);
+        });
     });
 
     describe("Test Shironet (logic only)", () => {
@@ -22,6 +42,7 @@ describe("Test Shironet", () => {
             });
             jest.spyOn(puppeteerUtils, "getElementText").mockImplementation(async (element: ElementHandle): Promise<string> => element as unknown as string);
             jest.spyOn(puppeteerUtils, "clickElement").mockImplementation(async () => { /**/ });
+            jest.spyOn(puppeteerUtils, "getPageUrl").mockReturnValue("https://shironet.mako.co.il/artist?type=lyrics&lang=1&prfid=686&wrkid=3063");
             jest.spyOn(puppeteerUtils, "closePage").mockImplementation(async () => { /**/ });
 
             const lyrics: Lyrics = await Shironet.getLyrics("artist1", "title1");

@@ -1,7 +1,7 @@
 import * as dbClient from "~src/db/dbClient";
 import type { Lyrics } from "~src/types";
 import { Language } from "~src/types";
-import { getLyrics } from "~src/lyrics";
+import { getLyrics, getLyricsLanguage } from "~src/lyrics";
 import { Shironet } from "~src/services";
 
 describe("Test lyrics", () => {
@@ -58,6 +58,15 @@ describe("Test lyrics", () => {
             expect(dbClient.getLyricsFromDb).toHaveBeenCalledWith("The Sign", "Ace of Base");
             expect(Shironet.getLyrics).not.toHaveBeenCalled();
             expect(dbClient.putLyricsInDb).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("Test getLyricsLanguage", () => {
+        it("Should return true", () => {
+            expect(getLyricsLanguage("אבג")).toEqual(Language.HEBREW);
+        });
+        it("Should return false", () => {
+            expect(getLyricsLanguage("abc")).toEqual(Language.ENGLISH);
         });
     });
 });
