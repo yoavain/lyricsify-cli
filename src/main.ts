@@ -1,7 +1,7 @@
 import type { LoggerInterface } from "~src/logger";
 import { Logger } from "~src/logger";
 import type { NotifierInterface } from "~src/notifier";
-import { NotificationType, Notifier } from "~src/notifier";
+import { NotificationText, NotificationType, Notifier } from "~src/notifier";
 import type { Config } from "~src/config";
 import { getConfig } from "~src/config";
 import * as fs from "fs";
@@ -44,6 +44,6 @@ export const main = async () => {
         }
     }
     else {
-        notifier.notif("Missing input file", NotificationType.FAILED);
+        notifier.notif(NotificationText.MISSING_INPUT_FILE, NotificationType.FAILED);
     }
 };

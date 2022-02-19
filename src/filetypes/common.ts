@@ -1,7 +1,7 @@
 import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
 import type { FileHandler } from "~src/filetypes";
-import { ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE, ERROR_FILE_TYPE_MISMATCH } from "~src/errors";
+import { ErrorMessages } from "~src/errors";
 
 export type FileIdentifier = {
     artist: string
@@ -29,11 +29,11 @@ export const getFileMetadata: GetFileMetadata = async (filePath: string, fileHan
     const { artist, title } = parseFileIdentifier(audioMetadata);
 
     if (!artist || !title) {
-        throw new Error(ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE);
+        throw new Error(ErrorMessages.ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE);
     }
 
     if (!fileHandler.verifyType(audioMetadata)) {
-        throw new Error(ERROR_FILE_TYPE_MISMATCH);
+        throw new Error(ErrorMessages.ERROR_FILE_TYPE_MISMATCH);
     }
 
     return { artist, title, ...fileHandler.parseLyrics(audioMetadata) };

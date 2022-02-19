@@ -19,6 +19,18 @@ export enum NotificationType {
     FAILED = "FAILED"
 }
 
+export enum NotificationText {
+    MISSING_INPUT_FILE = "Missing input file",
+    MIGRATING = "Lyrics found on file. Updating database",
+    LYRICS_NOT_FOUND = "Lyrics not found",
+    LYRICS_FOUND_DRY_RUN = "Lyrics found. Dry-run mode",
+    LYRICS_WRITTEN_TO_TXT = "Lyrics written to .txt file",
+    LYRICS_NOT_WRITTEN_TO_TXT = "Lyrics not written since .txt file already exists",
+    LYRICS_WRITTEN_TO_HEADER = "Lyrics written to header",
+    LYRICS_ALREADY_EXIST = "Lyrics already exist",
+    NO_FILE_HANDLED = "No file handled"
+}
+
 export const getNotificationIcon = (notificationType: NotificationType): string => {
     switch (notificationType) {
         case NotificationType.LOGO:
@@ -35,7 +47,7 @@ export const getNotificationIcon = (notificationType: NotificationType): string 
 }; 
 
 export interface NotifierInterface {
-    notif: (message: string, notificationIcon: NotificationType, openLog?: boolean) => void;
+    notif: (message: NotificationText, notificationIcon: NotificationType, openLog?: boolean) => void;
 }
 
 export class Notifier implements NotifierInterface {

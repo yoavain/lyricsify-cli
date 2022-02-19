@@ -1,4 +1,4 @@
-import type { NotifierInterface } from "~src/notifier";
+import type { NotifierInterface, NotificationText } from "~src/notifier";
 import { NotificationType, Notifier } from "~src/notifier";
 import type { LoggerInterface } from "~src/logger";
 import { MockLogger } from "./__mocks__";
@@ -31,7 +31,7 @@ describe("Test notifier", () => {
         // Notifier
         const notifier: NotifierInterface = new Notifier(logger, "", true);
 
-        notifier.notif("Testing notifier", NotificationType.LOGO);
+        notifier.notif("Testing notifier" as NotificationText, NotificationType.LOGO);
 
         expect(mockNotify).not.toHaveBeenCalled();
         expect(mockOn).not.toHaveBeenCalled();
@@ -43,7 +43,7 @@ describe("Test notifier", () => {
         // Notifier
         const notifier: NotifierInterface = new Notifier(logger, "", false);
 
-        notifier.notif("Testing notifier", NotificationType.WARNING);
+        notifier.notif("Testing notifier" as NotificationText, NotificationType.WARNING);
 
         expect(mockNotify).toHaveBeenCalledTimes(1);
         expect(mockNotify.mock.calls[0][0]).toEqual({
@@ -60,7 +60,7 @@ describe("Test notifier", () => {
         // Notifier
         const notifier: NotifierInterface = new Notifier(logger, "", false);
 
-        notifier.notif("Testing notifier", NotificationType.FAILED, true);
+        notifier.notif("Testing notifier" as NotificationText, NotificationType.FAILED, true);
 
         expect(mockNotify).toHaveBeenCalledTimes(1);
         expect(mockNotify.mock.calls[0][0]).toEqual({
@@ -85,7 +85,7 @@ describe("Test notifier", () => {
         const notifier: NotifierInterface = new Notifier(logger, "", false);
 
         Object.values(NotificationType).forEach((notificationType: NotificationType, index: number) => {
-            notifier.notif("Testing notifier", notificationType);
+            notifier.notif("Testing notifier" as NotificationText, notificationType);
             expect(mockNotify.mock.calls[index][0]).toBeTruthy();
         });
     });

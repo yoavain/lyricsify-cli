@@ -5,13 +5,12 @@ import * as commonWriter from "~src/filetypes/commonWriter";
 import * as lyrics from "~src/lyrics";
 import * as utils from "~src/utils";
 import type { Stats } from "fs";
+import fs from "fs";
 import { handleFile, handleFolder } from "~src/logic";
 import type { Config } from "~src/config";
 import { MP3 } from "~src/filetypes";
 import type { NotifierInterface } from "~src/notifier";
-import { NotificationType } from "~src/notifier";
-import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
-import fs from "fs";
+import { NotificationText, NotificationType } from "~src/notifier";
 import path from "path";
 
 const FULL_PATH = "test/logic.test.mp3";
@@ -28,7 +27,7 @@ describe("Test logic", () => {
             await handleFile(FULL_PATH, { migrate: true } as Config, undefined, notifier);
 
             expect(dbClient.putLyricsInDbIfNeeded).toHaveBeenCalledWith("artist", "title", "heb", "Lyrics");
-            expect(notifier.notif).toHaveBeenCalledWith("Lyrics found on file. Updating database", NotificationType.DOWNLOAD);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.MIGRATING, NotificationType.DOWNLOAD);
         });
 
         it("Should not migrate, when flag is false", async () => {
@@ -40,7 +39,7 @@ describe("Test logic", () => {
             await handleFile(FULL_PATH, { migrate: false } as Config, undefined, notifier);
 
             expect(dbClient.putLyricsInDbIfNeeded).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith("Lyrics already exist", NotificationType.WARNING);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_ALREADY_EXIST, NotificationType.WARNING);
         });
 
         it("Should not do anything, when in lyrics not found", async () => {
@@ -54,7 +53,7 @@ describe("Test logic", () => {
 
             expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith(ERROR_LYRICS_NOT_FOUND, NotificationType.WARNING);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_NOT_FOUND, NotificationType.WARNING);
         });
 
         it("Should not do anything, when in dry-run mode and lyrics found", async () => {
@@ -68,7 +67,7 @@ describe("Test logic", () => {
 
             expect(commonWriter.writePlexLyrics).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith("Lyrics found. Dry-run mode", NotificationType.WARNING);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_FOUND_DRY_RUN, NotificationType.WARNING);
         });
 
         it("Should call plex writer, when in plex mode, with writing", async () => {
@@ -82,7 +81,7 @@ describe("Test logic", () => {
 
             expect(commonWriter.writePlexLyrics).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith("Lyrics written to .txt file", NotificationType.DOWNLOAD);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_WRITTEN_TO_TXT, NotificationType.DOWNLOAD);
         });
         it("Should call plex writer, when in plex mode, without writing", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
@@ -95,7 +94,7 @@ describe("Test logic", () => {
 
             expect(commonWriter.writePlexLyrics).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith("Lyrics not written since .txt file already exists", NotificationType.WARNING);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_NOT_WRITTEN_TO_TXT, NotificationType.WARNING);
         });
 
         it("Should call headers writer, when not in plex mode", async () => {
@@ -108,7 +107,7 @@ describe("Test logic", () => {
             await handleFile(FULL_PATH, { migrate: false, dryRun: false, plex: false } as Config, undefined, notifier);
 
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledWith(FULL_PATH, MP3, "heb", "Lyrics");
-            expect(notifier.notif).toHaveBeenCalledWith("Lyrics written to header", NotificationType.DOWNLOAD);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_WRITTEN_TO_HEADER, NotificationType.DOWNLOAD);
         });
     });
 
@@ -164,7 +163,7 @@ describe("Test logic", () => {
 
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(0);
             expect(utils.sleep).toHaveBeenCalledTimes(0);
-            expect(notifier.notif).toHaveBeenCalledWith("No file handled", NotificationType.WARNING);
+            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.NO_FILE_HANDLED, NotificationType.WARNING);
         });
     });
 });

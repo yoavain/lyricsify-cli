@@ -2,7 +2,7 @@ import type { IAudioMetadata } from "music-metadata";
 import type { LyricsField } from "~src/filetypes";
 import { FLAC, MP3, SupportedFileExtension } from "~src/filetypes";
 import { getFileExtension } from "~src/fileUtils";
-import { ERROR_NO_FILE_HANDLER_FOR_THIS_FILE } from "~src/errors";
+import { ErrorMessages } from "~src/errors";
 
 export type FileHandler = {
     getExtension: () => SupportedFileExtension
@@ -20,6 +20,6 @@ export const getFileHandler = (filePath: string): FileHandler => {
         return FLAC;
     }
     else {
-        throw new Error(ERROR_NO_FILE_HANDLER_FOR_THIS_FILE);
+        throw new Error(ErrorMessages.ERROR_NO_FILE_HANDLER_FOR_THIS_FILE);
     }
 };
