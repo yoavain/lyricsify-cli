@@ -1,5 +1,5 @@
 import * as path from "path";
-import type { Config } from "~src/config";
+import type { Config } from "~src/config/commonConfig";
 
 export type SnoreToastConfig = Pick<Config, "snoreToastPath">;
 

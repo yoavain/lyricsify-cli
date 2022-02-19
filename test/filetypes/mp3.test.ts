@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Promise as NodeID3Promise } from "node-id3";
-import type { LyricsField } from "~src/filetypes";
-import { MP3, SupportedFileExtension } from "~src/filetypes";
+import { MP3 } from "~src/filetypes/mp3";
+import type { LyricsField } from "~src/filetypes/common";
+import { SupportedFileExtension } from "~src/filetypes/types";
 import { Language } from "~src/types";
 import * as fileUtils from "~src/fileUtils";
 import path from "path";

@@ -1,5 +1,5 @@
-import type { SnoreToastConfig } from "~src/config";
-import { getSnoreToastConfig } from "~src/config";
+import type { SnoreToastConfig } from "~src/config/snoreToastConfig";
+import { getSnoreToastConfig } from "~src/config/snoreToastConfig";
 
 describe("test parse snoreToastConfig", () => {
     it("test dev run", () => {

@@ -1,7 +1,8 @@
 const MetaFlac = require("metaflac-js");
 import path from "path";
-import type { LyricsField } from "~src/filetypes";
-import { FLAC, SupportedFileExtension } from "~src/filetypes";
+import type { LyricsField } from "~src/filetypes/common";
+import { SupportedFileExtension } from "~src/filetypes/types";
+import { FLAC } from "~src/filetypes/flac";
 import * as fileUtils from "~src/fileUtils";
 import { Language } from "~src/types";
 

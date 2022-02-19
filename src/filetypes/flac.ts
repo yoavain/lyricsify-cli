@@ -1,7 +1,7 @@
 import type { LyricsField } from "~src/filetypes/common";
 import type { IAudioMetadata } from "music-metadata";
-import type { FileHandler } from "~src/filetypes";
-import { SupportedFileExtension } from "~src/filetypes";
+import type { FileHandler } from "~src/filetypes/fileHandler";
+import { SupportedFileExtension } from "~src/filetypes/types";
 import MetaFlac from "metaflac-js";
 import { backupFile } from "~src/fileUtils";
 import { ErrorMessages } from "~src/errors";

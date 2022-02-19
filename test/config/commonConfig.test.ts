@@ -1,7 +1,7 @@
 import * as cliConfig from "~src/config/cliConfig";
 import * as fileConfig from "~src/config/fileConfig";
 import * as snoreToastConfig from "~src/config/snoreToastConfig";
-import { getConfig } from "~src/config";
+import { getConfig } from "~src/config/commonConfig";
 
 describe("Test common config", () => {
     it("Test getConfig", () => {

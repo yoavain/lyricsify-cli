@@ -1,7 +1,7 @@
 import path from "path";
 import * as fs from "fs";
 import { EXTENSIONS } from "~src/commonConsts";
-import type { SupportedFileExtension } from "~src/filetypes";
+import type { SupportedFileExtension } from "~src/filetypes/types";
 import { ErrorMessages } from "~src/errors";
 
 export const getFileExtension = (fullPath: string): string => {

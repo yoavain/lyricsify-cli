@@ -1,6 +1,6 @@
 import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
-import type { FileHandler } from "~src/filetypes";
+import type { FileHandler } from "~src/filetypes/fileHandler";
 import { ErrorMessages } from "~src/errors";
 import type { Language } from "~src/types";
 

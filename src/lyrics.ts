@@ -1,5 +1,5 @@
-import { Shironet } from "~src/services";
-import { getLyricsFromDb, putLyricsInDb } from "~src/db";
+import { getLyricsFromDb, putLyricsInDb } from "~src/db/dbClient";
+import { Shironet } from "~src/services/shironet";
 import { hasHebrewChars } from "~src/utils";
 import type { Lyrics } from "~src/types";
 import { Language } from "~src/types";

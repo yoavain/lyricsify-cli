@@ -1,4 +1,6 @@
-import { getCliConfig, getFileConfig, getSnoreToastConfig } from "~src/config";
+import { getSnoreToastConfig } from "~src/config/snoreToastConfig";
+import { getFileConfig } from "~src/config/fileConfig";
+import { getCliConfig } from "~src/config/cliConfig";
 
 export type Config = {
     filename: string

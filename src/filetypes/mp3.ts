@@ -1,5 +1,6 @@
-import type { FileHandler, LyricsField } from "~src/filetypes";
-import { SupportedFileExtension } from "~src/filetypes";
+import type { LyricsField } from "~src/filetypes/common";
+import { SupportedFileExtension } from "~src/filetypes/types";
+import type { FileHandler } from "~src/filetypes/fileHandler";
 import type { IAudioMetadata } from "music-metadata";
 import type NodeID3 from "node-id3";
 import { Promise as NodeID3Promise } from "node-id3";

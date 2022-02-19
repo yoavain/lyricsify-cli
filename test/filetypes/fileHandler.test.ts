@@ -1,5 +1,6 @@
-import type { FileHandler } from "~src/filetypes";
-import { SupportedFileExtension, getFileHandler } from "~src/filetypes";
+import type { FileHandler } from "~src/filetypes/fileHandler";
+import { getFileHandler } from "~src/filetypes/fileHandler";
+import { SupportedFileExtension } from "~src/filetypes/types";
 
 describe("Test file handler", () => {
     describe("Test getFileHandler", () => {
