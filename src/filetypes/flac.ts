@@ -5,7 +5,8 @@ import { SupportedFileExtension } from "~src/filetypes";
 import MetaFlac from "metaflac-js";
 import { backupFile } from "~src/fileUtils";
 import { ErrorMessages } from "~src/errors";
-import { Language } from "~src/types";
+import type { Language } from "~src/types";
+import { getLyricsLanguage } from "~src/lyrics";
 
 const getExtension = (): SupportedFileExtension => {
     return SupportedFileExtension.FLAC;
@@ -23,7 +24,7 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
 
     const index: number = lyricsItem.indexOf("||");
     if (index < 0) {
-        return { language: Language.HEBREW, lyrics: lyricsItem };
+        return { language: getLyricsLanguage(lyricsItem), lyrics: lyricsItem };
     }
 
     return {

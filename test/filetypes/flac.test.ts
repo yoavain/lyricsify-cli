@@ -44,7 +44,7 @@ describe("Test FLAC file type", () => {
 
             const lyricsField: LyricsField = FLAC.parseLyrics(require(jsonLocation));
 
-            expect(lyricsField).toEqual({ language: Language.HEBREW, lyrics: "Lyrics" });
+            expect(lyricsField).toEqual({ language: Language.ENGLISH, lyrics: "Lyrics" });
         });
         it("Should parse correctly file without lyrics", () => {
             const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/flacWithoutLyrics.json");
