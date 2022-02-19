@@ -1,10 +1,7 @@
 import { Shironet } from "~src/services";
 import { getLyricsFromDb, putLyricsInDb } from "~src/db";
+import type { Lyrics } from "~src/types";
 
-export type Lyrics = {
-    language: string
-    lyrics: string
-}
 export type GetLyrics = (artist: string, track: string, local?: boolean) => Promise<Lyrics>
 
 export const getLyrics: GetLyrics = async (artist: string, title: string, local?: boolean): Promise<Lyrics> => {

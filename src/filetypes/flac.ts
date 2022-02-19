@@ -5,6 +5,7 @@ import { SupportedFileExtension } from "~src/filetypes";
 import MetaFlac from "metaflac-js";
 import { backupFile } from "~src/fileUtils";
 import { ErrorMessages } from "~src/errors";
+import { Language } from "~src/types";
 
 const getExtension = (): SupportedFileExtension => {
     return SupportedFileExtension.FLAC;
@@ -22,7 +23,7 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
 
     const index: number = lyricsItem.indexOf("||");
     if (index < 0) {
-        return { language: "", lyrics: lyricsItem };
+        return { language: Language.HEBREW, lyrics: lyricsItem };
     }
 
     return {
@@ -31,7 +32,7 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
     };
 };
 
-const writeLyrics = async (filePath: string, language: string, lyrics: string) => {
+const writeLyrics = async (filePath: string, language: Language, lyrics: string) => {
     const metaFlac = new MetaFlac(filePath);
     if (!metaFlac.getTag("UNSYNCEDLYRICS")) {
         await backupFile(filePath);

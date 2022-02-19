@@ -1,6 +1,7 @@
 import * as fileUtils from "~src/fileUtils";
 import type { FileHandler } from "~src/filetypes";
 import { writeLyricsHeader, writePlexLyrics } from "~src/filetypes";
+import { Language } from "~src/types";
 import path from "path";
 
 describe("Test common Writer", () => {
@@ -22,7 +23,7 @@ describe("Test common Writer", () => {
     describe("Test writeLyricsHeader", () => {
         it("Should call file handler", async () => {
             const fileHandler: FileHandler = { writeLyrics: jest.fn() } as unknown as FileHandler;
-            await writeLyricsHeader("/path/to/test.mp3", fileHandler, "heb", "Lyrics");
+            await writeLyricsHeader("/path/to/test.mp3", fileHandler, Language.HEBREW, "Lyrics");
             expect(fileHandler.writeLyrics).toHaveBeenCalledWith("/path/to/test.mp3", "heb", "Lyrics");
         });
     });

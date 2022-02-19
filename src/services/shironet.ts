@@ -1,13 +1,12 @@
 import type { LyricsService } from "~src/services/interface";
-import type { Lyrics } from "~src/lyrics";
+import type { Lyrics } from "~src/types";
+import { Language } from "~src/types";
 import { ErrorMessages } from "~src/errors";
 import type { ElementHandle, Page } from "puppeteer";
 import { clickElement, closePage, findElements, getElementText, pageLoad } from "~src/puppeteerUtils";
 import { chunkToPairs } from "~src/utils";
 
 const SHIRONET_BASE_URL = "https://shironet.mako.co.il";
-
-const LANGUAGE = "heb";
 
 export const getSongSearchUrl = (artist: string, title: string): string => {
     return `${SHIRONET_BASE_URL}/searchSongs?q=${encodeURIComponent(`"${artist}" "${title}"`)}&type=lyrics`;
@@ -48,11 +47,12 @@ export const Shironet: LyricsService = {
                 throw new Error(ErrorMessages.ERROR_LYRICS_NOT_FOUND);
             }
 
+            const language: Language = Language.HEBREW;
             const lyrics: string = await getElementText(lyricsElements[0], "textContent");
 
             return {
-                language: LANGUAGE,
-                lyrics: lyrics
+                language,
+                lyrics
             };
 
         }

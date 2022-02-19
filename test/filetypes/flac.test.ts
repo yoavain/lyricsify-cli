@@ -3,6 +3,7 @@ import path from "path";
 import type { LyricsField } from "~src/filetypes";
 import { FLAC, SupportedFileExtension } from "~src/filetypes";
 import * as fileUtils from "~src/fileUtils";
+import { Language } from "~src/types";
 
 describe("Test FLAC file type", () => {
     describe("Test getExtension", () => {
@@ -36,14 +37,14 @@ describe("Test FLAC file type", () => {
 
             const lyricsField: LyricsField = FLAC.parseLyrics(require(jsonLocation));
 
-            expect(lyricsField).toEqual({ language: "eng", lyrics: "Lyrics" });
+            expect(lyricsField).toEqual({ language: Language.ENGLISH, lyrics: "Lyrics" });
         });
         it("Should parse correctly file with lyrics, with missing language", () => {
             const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/flacWithLyricsNoLanguage.json");
 
             const lyricsField: LyricsField = FLAC.parseLyrics(require(jsonLocation));
 
-            expect(lyricsField).toEqual({ language: "", lyrics: "Lyrics" });
+            expect(lyricsField).toEqual({ language: Language.HEBREW, lyrics: "Lyrics" });
         });
         it("Should parse correctly file without lyrics", () => {
             const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/flacWithoutLyrics.json");
@@ -70,7 +71,7 @@ describe("Test FLAC file type", () => {
             jest.spyOn(MetaFlac.prototype, "save").mockImplementation(mockSave);
             jest.spyOn(fileUtils, "backupFile").mockImplementation(async () => { /* */ });
 
-            await FLAC.writeLyrics("/path/to/file.flac", "heb", "Lyrics");
+            await FLAC.writeLyrics("/path/to/file.flac", Language.HEBREW, "Lyrics");
 
             expect(mockInit).toHaveBeenCalledTimes(1);
             expect(mockGetTag).not.toHaveBeenCalledWith("/path/to/file.flac");
@@ -89,7 +90,7 @@ describe("Test FLAC file type", () => {
             jest.spyOn(fileUtils, "backupFile").mockImplementation(async () => { /* */ });
 
             try {
-                await FLAC.writeLyrics("/path/to/file.flac", "heb", "Lyrics");
+                await FLAC.writeLyrics("/path/to/file.flac", Language.HEBREW, "Lyrics");
                 fail();
             }
             catch (e) {

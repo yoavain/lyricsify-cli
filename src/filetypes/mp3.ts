@@ -5,6 +5,7 @@ import type NodeID3 from "node-id3";
 import { Promise as NodeID3Promise } from "node-id3";
 import { backupFile } from "~src/fileUtils";
 import { ErrorMessages } from "~src/errors";
+import type { Language } from "~src/types";
 
 const getExtension = (): SupportedFileExtension => {
     return SupportedFileExtension.MP3;
@@ -27,7 +28,7 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
     };
 };
 
-const writeLyrics = async (filePath: string, language: string, lyrics: string) => {
+const writeLyrics = async (filePath: string, language: Language, lyrics: string) => {
     const existingTags: NodeID3.Tags = await NodeID3Promise.read(filePath);
     if (!existingTags?.unsynchronisedLyrics?.text) {
         await backupFile(filePath);

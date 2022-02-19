@@ -2,6 +2,7 @@
 import { Promise as NodeID3Promise } from "node-id3";
 import type { LyricsField } from "~src/filetypes";
 import { MP3, SupportedFileExtension } from "~src/filetypes";
+import { Language } from "~src/types";
 import * as fileUtils from "~src/fileUtils";
 import path from "path";
 
@@ -35,7 +36,7 @@ describe("Test MP3 file type", () => {
 
             const lyricsField: LyricsField = await MP3.parseLyrics(require(jsonLocation));
 
-            expect(lyricsField).toEqual({ language: "eng", lyrics: "Lyrics" });
+            expect(lyricsField).toEqual({ language: Language.ENGLISH, lyrics: "Lyrics" });
         });
         it("Should parse correctly file without lyrics", async () => {
             const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/mp3WithoutLyrics.json");
@@ -52,7 +53,7 @@ describe("Test MP3 file type", () => {
             jest.spyOn(fileUtils, "backupFile").mockImplementation(async () => { /* */ });
             jest.spyOn(NodeID3Promise, "update").mockImplementation(async () => true);
 
-            await MP3.writeLyrics("/path/to/file.mp3", "heb", "Lyrics");
+            await MP3.writeLyrics("/path/to/file.mp3", Language.HEBREW, "Lyrics");
 
             expect(NodeID3Promise.update).toHaveBeenCalledWith({ unsynchronisedLyrics: { language: "heb", text: "Lyrics" } }, "/path/to/file.mp3");
         });
@@ -60,7 +61,7 @@ describe("Test MP3 file type", () => {
             jest.spyOn(NodeID3Promise, "read").mockImplementation(async () => ({ unsynchronisedLyrics: { language: "heb", text: "Existing lyrics" } }));
 
             try {
-                await MP3.writeLyrics("/path/to/file.mp3", "heb", "Lyrics");
+                await MP3.writeLyrics("/path/to/file.mp3", Language.HEBREW, "Lyrics");
                 fail();
             }
             catch (e) {

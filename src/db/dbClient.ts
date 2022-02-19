@@ -1,6 +1,6 @@
 import * as path from "path";
 import { PROGRAM_DB_FILENAME, PROGRAM_NAME } from "~src/commonConsts";
-import type { Lyrics } from "~src/lyrics";
+import type { Language, Lyrics } from "~src/types";
 
 const DB_FILE_PATH: string = path.resolve(process.env.ProgramData, PROGRAM_NAME, PROGRAM_DB_FILENAME);
 const BIN_RELATIVE_PATH = "bin/sqlite/sqlite3.exe";
@@ -12,7 +12,7 @@ export type LyricsRow = {
     artist: string, // key
     title: string, // key
 
-    language: string,
+    language: Language,
     lyrics: string
 }
 
@@ -57,7 +57,7 @@ export const getLyricsFromDb = async (artist: string, title: string): Promise<Ly
     }
 };
 
-export const putLyricsInDb = async (artist: string, title: string, language: string, lyrics: string): Promise<void> => {
+export const putLyricsInDb = async (artist: string, title: string, language: Language, lyrics: string): Promise<void> => {
     const dbClient = await getDbClient();
     return dbClient.query`INSERT OR REPLACE INTO ${schema}.${lyricsTable} (artist,title,language,lyrics) VALUES (${artist},${title},${language},${lyrics})`;
 };
@@ -67,7 +67,7 @@ export const deleteLyricsFromDb = async (artist: string, title: string): Promise
     return dbClient.query`DELETE FROM ${schema}.${lyricsTable} WHERE artist=${artist} AND title=${title}`;
 };
 
-export const putLyricsInDbIfNeeded = async (artist: string, title: string, language: string, lyrics: string): Promise<void> => {
+export const putLyricsInDbIfNeeded = async (artist: string, title: string, language: Language, lyrics: string): Promise<void> => {
     const foundInCache = await getLyricsFromDb(artist, title);
     if (!foundInCache) {
         await putLyricsInDb(artist, title, language, lyrics);

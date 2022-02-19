@@ -1,6 +1,7 @@
 import type { LyricsRow } from "~src/db";
 import { deleteLyricsFromDb, getLyricsFromDb, putLyricsInDb, putLyricsInDbIfNeeded } from "~src/db";
-import type { Lyrics } from "~src/lyrics";
+import type { Lyrics } from "~src/types";
+import { Language } from "~src/types";
 
 jest.mock("../../node_modules/sqlite-tag-spawned/cjs/utils", () => ({}));
 const mockTransaction = jest.fn(() => {
@@ -15,7 +16,7 @@ const mockGet = jest.fn(async (...params: string[]) => {
         throw new Error("Error in DB");
     }
     if (params[3] === "artist" && params[4] === "title") {
-        return { artist: "artist", title: "title", language: "heb", lyrics: "Lyrics" } as LyricsRow;
+        return { artist: "artist", title: "title", language: Language.HEBREW, lyrics: "Lyrics" } as LyricsRow;
     }
     return null;
 });
@@ -37,7 +38,7 @@ describe("Test db client", () => {
             const lyrics: Lyrics = await getLyricsFromDb("artist", "title");
 
             expect(mockGet).toHaveBeenCalledWith(["SELECT * from ", ".", " WHERE artist=", " AND title=", ""], "main", "lyrics", "artist", "title");
-            expect(lyrics).toEqual({ language: "heb", lyrics: "Lyrics" });
+            expect(lyrics).toEqual({ language: Language.HEBREW, lyrics: "Lyrics" });
         });
         it("Should return null when not in DB", async () => {
             const lyrics: Lyrics = await getLyricsFromDb("unknown", "unknown");
@@ -54,7 +55,7 @@ describe("Test db client", () => {
     });
     describe("Test putLyricsInDb", () => {
         it ("Should call query correctly", async () => {
-            await putLyricsInDb("artist", "title", "heb", "Lyrics");
+            await putLyricsInDb("artist", "title", Language.HEBREW, "Lyrics");
             expect(mockQuery).toHaveBeenCalledWith(
                 ["INSERT OR REPLACE INTO ", ".", " (artist,title,language,lyrics) VALUES (", ",", ",", ",", ")"],
                 "main", "lyrics", "artist", "title", "heb", "Lyrics"
@@ -70,14 +71,14 @@ describe("Test db client", () => {
     });
     describe("Test putLyricsInDbIfNeeded", () => {
         it("Should call query, when not in DB", async () => {
-            await putLyricsInDbIfNeeded("unknown", "unknown", "heb", "Lyrics");
+            await putLyricsInDbIfNeeded("unknown", "unknown", Language.HEBREW, "Lyrics");
             expect(mockQuery).toHaveBeenCalledWith(
                 ["INSERT OR REPLACE INTO ", ".", " (artist,title,language,lyrics) VALUES (", ",", ",", ",", ")"],
                 "main", "lyrics", "unknown", "unknown", "heb", "Lyrics"
             );
         });
         it("Should not call query, when already in DB", async () => {
-            await putLyricsInDbIfNeeded("artist", "title", "heb", "Lyrics");
+            await putLyricsInDbIfNeeded("artist", "title", Language.HEBREW, "Lyrics");
             expect(mockQuery).not.toHaveBeenCalled();
         });
     });
