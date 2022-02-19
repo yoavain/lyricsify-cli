@@ -2,6 +2,7 @@ import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
 import type { FileHandler } from "~src/filetypes";
 import { ErrorMessages } from "~src/errors";
+import type { Language } from "~src/types";
 
 export type FileIdentifier = {
     artist: string
@@ -9,14 +10,14 @@ export type FileIdentifier = {
 }
 
 export type LyricsField = {
-    language?: string
+    language?: Language
     lyrics?: string
 }
 
 export type FileMetadata = FileIdentifier & LyricsField;
 
 export type GetFileMetadata = (file: string, fileHandler: FileHandler) => Promise<FileMetadata>;
-export type WriteLyrics = (filePath: string, fileHandler: FileHandler, language: string, lyrics: string) => Promise<void>;
+export type WriteLyrics = (filePath: string, fileHandler: FileHandler, language: Language, lyrics: string) => Promise<void>;
 
 const parseFileIdentifier = (audioMetadata: IAudioMetadata): FileIdentifier => {
     const artist: string = audioMetadata?.common?.artist;
@@ -39,6 +40,6 @@ export const getFileMetadata: GetFileMetadata = async (filePath: string, fileHan
     return { artist, title, ...fileHandler.parseLyrics(audioMetadata) };
 };
 
-export const writeLyrics: WriteLyrics = async (filePath: string, fileHandler: FileHandler, language: string, lyrics: string) => {
+export const writeLyrics: WriteLyrics = async (filePath: string, fileHandler: FileHandler, language: Language, lyrics: string) => {
     return fileHandler.writeLyrics(filePath, language, lyrics);
 };

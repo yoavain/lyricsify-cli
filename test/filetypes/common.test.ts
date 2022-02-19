@@ -5,6 +5,7 @@ import { getFileMetadata, writeLyrics } from "~src/filetypes";
 import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
 import { ErrorMessages } from "~src/errors";
+import { Language } from "~src/types";
 
 describe("Test common file types", () => {
     describe("Test getFileMetadata", () => {
@@ -38,12 +39,12 @@ describe("Test common file types", () => {
             const jsonLocation: string = path.join(__dirname, "../resources/metadataSamples/mp3WithLyrics.json");
             const metadata: IAudioMetadata = require(jsonLocation);
             jest.spyOn(MusicMetadata, "parseFile").mockImplementation(async () => metadata);
-            const mockParseLyrics = jest.fn().mockReturnValue({ language: "heb", lyrics: "Lyrics" });
+            const mockParseLyrics = jest.fn().mockReturnValue({ language: Language.HEBREW, lyrics: "Lyrics" });
             
             const response = await getFileMetadata("/path/to/file.mp3", { verifyType: () => true, parseLyrics: mockParseLyrics } as unknown as FileHandler);
 
             expect(mockParseLyrics).toHaveBeenCalledWith(metadata);
-            expect(response).toEqual({ artist: "Artist", title: "Title", language: "heb", lyrics: "Lyrics" });
+            expect(response).toEqual({ artist: "Artist", title: "Title", language: Language.HEBREW, lyrics: "Lyrics" });
         });
     });
 
@@ -53,7 +54,7 @@ describe("Test common file types", () => {
                 writeLyrics: jest.fn()
             } as unknown as FileHandler;
 
-            await writeLyrics("/path/to/file.mp3", handler, "heb", "Lyrics");
+            await writeLyrics("/path/to/file.mp3", handler, Language.HEBREW, "Lyrics");
 
             expect(handler.writeLyrics).toHaveBeenCalledWith("/path/to/file.mp3", "heb", "Lyrics");
         });

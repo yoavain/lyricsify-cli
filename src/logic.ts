@@ -2,7 +2,7 @@ import type { Config } from "~src/config";
 import type { FileHandler, FileMetadata } from "~src/filetypes";
 import { getFileHandler, getFileMetadata, writeLyricsHeader, writePlexLyrics } from "~src/filetypes";
 import { putLyricsInDbIfNeeded } from "~src/db";
-import type { Lyrics } from "~src/lyrics";
+import type { Lyrics } from "~src/types";
 import { getLyrics } from "~src/lyrics";
 import type { NotifierInterface } from "~src/notifier";
 import { NotificationText, NotificationType } from "~src/notifier";

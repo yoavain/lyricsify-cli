@@ -3,12 +3,13 @@ import type { LyricsField } from "~src/filetypes";
 import { FLAC, MP3, SupportedFileExtension } from "~src/filetypes";
 import { getFileExtension } from "~src/fileUtils";
 import { ErrorMessages } from "~src/errors";
+import type { Language } from "~src/types";
 
 export type FileHandler = {
     getExtension: () => SupportedFileExtension
     verifyType: (audioMetadata: IAudioMetadata) => boolean
     parseLyrics: (audioMetadata: IAudioMetadata) => LyricsField
-    writeLyrics: (filePath: string, language: string, lyrics: string) => Promise<void>
+    writeLyrics: (filePath: string, language: Language, lyrics: string) => Promise<void>
 };
 
 export const getFileHandler = (filePath: string): FileHandler => {
