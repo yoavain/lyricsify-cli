@@ -4,7 +4,7 @@ import type { FileHandler } from "~src/filetypes";
 import { getFileMetadata, writeLyrics } from "~src/filetypes";
 import type { IAudioMetadata } from "music-metadata";
 import * as MusicMetadata from "music-metadata";
-import { ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE, ERROR_FILE_TYPE_MISMATCH } from "~src/errors";
+import { ErrorMessages } from "~src/errors";
 
 describe("Test common file types", () => {
     describe("Test getFileMetadata", () => {
@@ -17,7 +17,7 @@ describe("Test common file types", () => {
                 fail();
             }
             catch (err) {
-                expect(err.message).toBe(ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE);
+                expect(err.message).toBe(ErrorMessages.ERROR_COULD_NOT_GET_ARTIST_OR_TITLE_FROM_FILE);
             }
         });
         
@@ -30,7 +30,7 @@ describe("Test common file types", () => {
                 fail();
             }
             catch (err) {
-                expect(err.message).toBe(ERROR_FILE_TYPE_MISMATCH);
+                expect(err.message).toBe(ErrorMessages.ERROR_FILE_TYPE_MISMATCH);
             }
         });
 

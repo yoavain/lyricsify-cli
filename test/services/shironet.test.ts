@@ -2,7 +2,7 @@ import * as puppeteerUtils from "~src/puppeteerUtils";
 import type { Lyrics } from "~src/lyrics";
 import { Shironet } from "~src/services/shironet";
 import type { Page, ElementHandle } from "puppeteer";
-import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
+import { ErrorMessages } from "~src/errors";
 
 describe("Test Shironet (logic only)", () => {
     afterEach(() => {
@@ -44,7 +44,7 @@ describe("Test Shironet (logic only)", () => {
         }
         catch (e) {
             // pass
-            expect(e.message).toEqual(ERROR_LYRICS_NOT_FOUND);
+            expect(e.message).toEqual(ErrorMessages.ERROR_LYRICS_NOT_FOUND);
         }
     });
 
@@ -65,7 +65,7 @@ describe("Test Shironet (logic only)", () => {
         }
         catch (e) {
             // pass
-            expect(e.message).toEqual(ERROR_LYRICS_NOT_FOUND);
+            expect(e.message).toEqual(ErrorMessages.ERROR_LYRICS_NOT_FOUND);
         }
 
     });

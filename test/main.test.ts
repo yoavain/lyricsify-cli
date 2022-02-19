@@ -22,6 +22,9 @@ jest.mock("~src/notifier", () => ({
     Notifier: function() {
         return mockNotifier;
     },
+    NotificationText: {
+        MISSING_INPUT_FILE: "Missing input file"
+    },
     NotificationType: {
         LOGO: "LOGO",
         DOWNLOAD: "DOWNLOAD",

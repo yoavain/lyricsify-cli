@@ -1,6 +1,6 @@
 import type { LyricsService } from "~src/services/interface";
 import type { Lyrics } from "~src/lyrics";
-import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
+import { ErrorMessages } from "~src/errors";
 import type { ElementHandle, Page } from "puppeteer";
 import { clickElement, closePage, findElements, getElementText, pageLoad } from "~src/puppeteerUtils";
 import { chunkToPairs } from "~src/utils";
@@ -39,13 +39,13 @@ export const Shironet: LyricsService = {
             }
 
             if (!foundElement) {
-                throw new Error(ERROR_LYRICS_NOT_FOUND);
+                throw new Error(ErrorMessages.ERROR_LYRICS_NOT_FOUND);
             }
             await clickElement(page, foundElement, ".artist_lyrics_text");
 
             const lyricsElements: Array<ElementHandle> = await findElements(page, ".artist_lyrics_text");
             if (!lyricsElements?.length) {
-                throw new Error(ERROR_LYRICS_NOT_FOUND);
+                throw new Error(ErrorMessages.ERROR_LYRICS_NOT_FOUND);
             }
 
             const lyrics: string = await getElementText(lyricsElements[0], "textContent");
@@ -58,7 +58,7 @@ export const Shironet: LyricsService = {
         }
         catch (e) {
             console.error(e);
-            throw new Error(ERROR_LYRICS_NOT_FOUND);
+            throw new Error(ErrorMessages.ERROR_LYRICS_NOT_FOUND);
         }
         finally {
             if (page) {

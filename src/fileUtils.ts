@@ -2,7 +2,7 @@ import path from "path";
 import * as fs from "fs";
 import { EXTENSIONS } from "~src/commonConsts";
 import type { SupportedFileExtension } from "~src/filetypes";
-import { ERROR_COULD_NOT_GET_PLEX_PATH, ERROR_INCORRECT_INPUT } from "~src/errors";
+import { ErrorMessages } from "~src/errors";
 
 export const getFileExtension = (fullPath: string): string => {
     return path.parse(fullPath).ext?.toLowerCase();
@@ -12,7 +12,7 @@ export const getFileWithAnotherExtension = (fullPath: string, ext: string): stri
     const { dir, name } = path.parse(fullPath);
     const newFile: string = path.join(dir, `${name}${ext}`);
     if (newFile === path.join(fullPath)) {
-        throw new Error(`${ERROR_INCORRECT_INPUT}. fullPath: ${fullPath}, ext: ${ext}`);
+        throw new Error(`${ErrorMessages.ERROR_INCORRECT_INPUT}. fullPath: ${fullPath}, ext: ${ext}`);
     }
     return newFile;
 };
@@ -22,7 +22,7 @@ export const getPlexPath = (fullPath: string): string => {
         return getFileWithAnotherExtension(fullPath, ".txt");
     }
     catch (e) {
-        throw new Error(ERROR_COULD_NOT_GET_PLEX_PATH);
+        throw new Error(ErrorMessages.ERROR_COULD_NOT_GET_PLEX_PATH);
     }
 };
 

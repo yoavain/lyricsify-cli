@@ -5,13 +5,12 @@ import { putLyricsInDbIfNeeded } from "~src/db";
 import type { Lyrics } from "~src/lyrics";
 import { getLyrics } from "~src/lyrics";
 import type { NotifierInterface } from "~src/notifier";
-import { NotificationType } from "~src/notifier";
+import { NotificationText, NotificationType } from "~src/notifier";
 import type { LoggerInterface } from "~src/logger";
 import { isFileSupported } from "~src/fileUtils";
 import { sleep } from "~src/utils";
 import fs from "fs";
 import path from "path";
-import { ERROR_LYRICS_NOT_FOUND } from "~src/errors";
 
 const BATCH_SLEEP_DURATION = 1000; // milliseconds
 
@@ -30,7 +29,7 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
     if (lyricsInHeader) {
         if (migrate) {
             await putLyricsInDbIfNeeded(artist, title, language, lyrics);
-            notifier?.notif("Lyrics found on file. Updating database", NotificationType.DOWNLOAD);
+            notifier?.notif(NotificationText.MIGRATING, NotificationType.DOWNLOAD);
         }
     }
     else {
@@ -39,7 +38,7 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
 
         // No lyrics in file, and no lyrics from service
         if (!fetchedLyrics) {
-            notifier?.notif(ERROR_LYRICS_NOT_FOUND, NotificationType.WARNING);
+            notifier?.notif(NotificationText.LYRICS_NOT_FOUND, NotificationType.WARNING);
             return;
         }
 
@@ -48,7 +47,7 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
     }
 
     if (dryRun) {
-        notifier?.notif("Lyrics found. Dry-run mode", NotificationType.WARNING);
+        notifier?.notif(NotificationText.LYRICS_FOUND_DRY_RUN, NotificationType.WARNING);
         return;
     }
 
@@ -56,24 +55,24 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
         // write file
         const plexLyricsWritten: boolean = await writePlexLyrics(filePath, lyrics);
         if (plexLyricsWritten) {
-            notifier?.notif("Lyrics written to .txt file", NotificationType.DOWNLOAD);
+            notifier?.notif(NotificationText.LYRICS_WRITTEN_TO_TXT, NotificationType.DOWNLOAD);
         }
         else {
-            notifier?.notif("Lyrics not written since .txt file already exists", NotificationType.WARNING);
+            notifier?.notif(NotificationText.LYRICS_NOT_WRITTEN_TO_TXT, NotificationType.WARNING);
         }
     }
     else if (!lyricsInHeader) {
         // write headers
         await writeLyricsHeader(filePath, fileHandler, language, lyrics);
-        notifier?.notif("Lyrics written to header", NotificationType.DOWNLOAD);
+        notifier?.notif(NotificationText.LYRICS_WRITTEN_TO_HEADER, NotificationType.DOWNLOAD);
     }
     else {
-        notifier?.notif("Lyrics already exist", NotificationType.WARNING);
+        notifier?.notif(NotificationText.LYRICS_ALREADY_EXIST, NotificationType.WARNING);
     }
 };
 
 export const handleFolder = async (dir: string, config: Config, logger?: LoggerInterface, notifier?: NotifierInterface): Promise<void> => {
-    let noFileHandled = true;
+    let fileHandled = false;
     const files: string[] = fs.readdirSync(dir);
     for (const file of files) {
         const fullPath: string = path.join(dir, file).replace(/\\/g, "/");
@@ -83,14 +82,14 @@ export const handleFolder = async (dir: string, config: Config, logger?: LoggerI
         }
         else {
             if (isFileSupported(fullPath)) {
-                noFileHandled = false;
+                fileHandled = true;
                 logger?.verbose(`Waiting ${BATCH_SLEEP_DURATION}ms to handle file ${fullPath}`);
                 await sleep(BATCH_SLEEP_DURATION);
                 await handleFile(fullPath, config, logger, notifier);
             }
         }
     }
-    if (noFileHandled) {
-        notifier?.notif("No file handled", NotificationType.WARNING);
+    if (!fileHandled) {
+        notifier?.notif(NotificationText.NO_FILE_HANDLED, NotificationType.WARNING);
     }
 };
