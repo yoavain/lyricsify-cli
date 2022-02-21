@@ -21,11 +21,13 @@ describe("test parse", () => {
         const fileConfig: Omit<Config, "filename" | "snoreToastPath"> = getFileConfig();
 
         expect(fileConfig).toEqual({
-            plex: false,
-            migrate: false,
+            saveHeader: false,
+            saveTxt: true,
+            disableCache: false,
+            offline: false,
             dryRun: false,
+            skipBackup: false,
             quiet: false,
-            local: false,
             verbose: false
         });
     });
@@ -36,11 +38,13 @@ describe("test parse", () => {
         const fileConfig: Omit<Config, "filename" | "snoreToastPath"> = getFileConfig();
 
         expect(fileConfig).toEqual({
-            plex: false,
-            migrate: false,
+            saveHeader: false,
+            saveTxt: false,
+            disableCache: false,
+            offline: false,
             dryRun: false,
+            skipBackup: false,
             quiet: false,
-            local: false,
             verbose: false
         });
     });
@@ -51,11 +55,13 @@ describe("test parse", () => {
         const fileConfig: Omit<Config, "filename" | "snoreToastPath"> = getFileConfig();
 
         expect(fileConfig).toEqual({
-            plex: true,
-            migrate: true,
+            saveHeader: true,
+            saveTxt: true,
+            disableCache: true,
+            offline: true,
             dryRun: true,
+            skipBackup: true,
             quiet: true,
-            local: true,
             verbose: true
         });
     });

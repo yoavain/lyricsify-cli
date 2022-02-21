@@ -7,15 +7,17 @@ describe("Test common config", () => {
     it("Test getConfig", () => {
         jest.spyOn(cliConfig, "getCliConfig").mockReturnValue({
             filename: "test/config/test.mp3",
-            migrate: true,
+            disableCache: true,
             dryRun: false
         });
         jest.spyOn(fileConfig, "getFileConfig").mockReturnValue({
-            plex: false,
-            migrate: false,
+            saveHeader: false,
+            saveTxt: false,
+            disableCache: false,
+            offline: false,
             dryRun: true,
+            skipBackup: false,
             quiet: true,
-            local: false,
             verbose: false
         });
         jest.spyOn(snoreToastConfig, "getSnoreToastConfig").mockReturnValue({
@@ -24,11 +26,13 @@ describe("Test common config", () => {
 
         expect(getConfig([])).toEqual({
             filename: "test/config/test.mp3",
-            plex: false,    // default
-            migrate: true,  // cli override true
-            dryRun: false,  // cli override false
-            quiet: true,   // default true
-            local: false,
+            saveHeader: false,  // default
+            saveTxt: false,     // default
+            disableCache: true, // cli override true
+            offline: false,
+            dryRun: false,      // cli override false
+            skipBackup: false,
+            quiet: true,        // default true
             verbose: false,
             snoreToastPath: "path/to/snoreToast"
         });

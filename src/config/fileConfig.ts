@@ -8,11 +8,13 @@ require("dotenv").config({ path: DOTENV_FILE_PATH });
 
 export const getFileConfig = (): Omit<Config, "filename" | "snoreToastPath"> => {
     return {
-        plex: process.env.LYRICSIFY_PLEX_MODE === "true",
-        migrate: process.env.LYRICSIFY_MIGRATE_MODE === "true",
+        saveHeader: process.env.LYRICSIFY_SAVE_HEADER === "true",
+        saveTxt: process.env.LYRICSIFY_SAVE_TXT === "true",
+        disableCache: process.env.LYRICSIFY_DISABLE_CACHE === "true",
+        offline: process.env.LYRICSIFY_OFFLINE === "true",
         dryRun: process.env.LYRICSIFY_DRY_RUN_MODE === "true",
+        skipBackup: process.env.LYRICSIFY_SKIP_BACKUP === "true",
         quiet: process.env.LYRICSIFY_QUIET_MODE === "true",
-        local: process.env.LYRICSIFY_LOCAL_MODE === "true",
         verbose: process.env.LYRICSIFY_VERBOSE_MODE === "true"
     };
 };
