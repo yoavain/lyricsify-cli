@@ -12,6 +12,6 @@ export const writePlexLyrics = async (filePath: string, lyrics: string): Promise
     return true;
 };
 
-export const writeLyricsHeader = async (filePath: string, fileHandler: FileHandler, language: Language, lyrics: string) => {
-    await fileHandler.writeLyrics(filePath, language, lyrics);
+export const writeLyricsHeader = async (filePath: string, fileHandler: FileHandler, language: Language, lyrics: string, skipBackup?: boolean) => {
+    await fileHandler.writeLyrics(filePath, language, lyrics, skipBackup);
 };
