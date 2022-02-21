@@ -19,6 +19,7 @@ const BATCH_SLEEP_DURATION = 1000; // milliseconds
 
 export const handleFile = async (filePath: string, { migrate, local, dryRun, plex }: Omit<Config, "filename">, logger?: LoggerInterface, notifier?: NotifierInterface) => {
     // Assumes file is supported
+    logger?.info(`Handling file ${filePath}`);
 
     // File handler
     const fileHandler: FileHandler = getFileHandler(filePath);
@@ -75,12 +76,12 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
 };
 
 export const handleFolder = async (dir: string, config: Config, logger?: LoggerInterface, notifier?: NotifierInterface): Promise<void> => {
+    logger?.info(`Handling folder ${dir}`);
     let fileHandled = false;
     const files: string[] = fs.readdirSync(dir);
     for (const file of files) {
         const fullPath: string = path.join(dir, file).replace(/\\/g, "/");
         if (fs.lstatSync(fullPath).isDirectory()) {
-            logger?.verbose(`Handling sub-folder ${fullPath}`);
             await handleFolder(fullPath, config, logger, notifier);
         }
         else {
