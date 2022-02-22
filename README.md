@@ -42,6 +42,30 @@ Installer adds right-click context to folders and to mp3/flac file types
 ### Right click file/folder
 Runs on file/folder using configuration from `%ProgramData%\lyricsify\lyricsify.env`
 
+```dotenv
+# Write lyrics to file header
+LYRICSIFY_SAVE_HEADER=false
+
+# Writes .txt file next to the audio file (i.e. /path/to/audio.mp3 -> /path/to/audio.txt)
+LYRICSIFY_SAVE_TXT=true
+
+LYRICSIFY_DISABLE_CACHE=false
+
+# Do not fetch lyrics from the web
+LYRICSIFY_OFFLINE=false
+
+# Do not make any changes to files
+LYRICSIFY_DRY_RUN_MODE=false
+
+# Do not create a backup of the original file
+LYRICSIFY_SKIP_BACKUP=false
+
+# Disables notifications
+LYRICSIFY_QUIET_MODE=false
+
+# Verbose mode: Extra prints to log
+LYRICSIFY_VERBOSE_MODE=false
+```
 
 ### CLI
 
