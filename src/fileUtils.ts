@@ -17,12 +17,12 @@ export const getFileWithAnotherExtension = (fullPath: string, ext: string): stri
     return newFile;
 };
 
-export const getPlexPath = (fullPath: string): string => {
+export const getTxtFilePath = (fullPath: string): string => {
     try {
         return getFileWithAnotherExtension(fullPath, ".txt");
     }
     catch (e) {
-        throw new Error(ErrorMessages.ERROR_COULD_NOT_GET_PLEX_PATH);
+        throw new Error(ErrorMessages.ERROR_COULD_NOT_GET_TXT_FILE_PATH);
     }
 };
 

@@ -3,7 +3,7 @@ import type { FileHandler } from "~src/filetypes/fileHandler";
 import { getFileHandler } from "~src/filetypes/fileHandler";
 import type { FileMetadata } from "~src/filetypes/common";
 import { getFileMetadata } from "~src/filetypes/common";
-import { writeLyricsHeader, writePlexLyrics } from "~src/filetypes/commonWriter";
+import { writeLyricsHeader, writeLyricsTxtFile } from "~src/filetypes/commonWriter";
 import { putLyricsInDbIfNeeded } from "~src/db/dbClient";
 import type { Lyrics } from "~src/types";
 import { getLyrics } from "~src/lyrics";
@@ -55,7 +55,7 @@ export const handleFile = async (filePath: string, { saveHeader, saveTxt, disabl
     if (lyricsInHeader) {
         if (!disableCache) {
             await putLyricsInDbIfNeeded(artist, title, language, lyrics);
-            notifier?.notif(NotificationText.MIGRATING, NotificationType.DOWNLOAD);
+            logger?.verbose("Saving lyrics from header to cache");
         }
     }
     else {
@@ -80,7 +80,7 @@ export const handleFile = async (filePath: string, { saveHeader, saveTxt, disabl
     let writtenToTxtFile = false;
     if (saveTxt) {
         // write file
-        writtenToTxtFile = await writePlexLyrics(filePath, lyrics);
+        writtenToTxtFile = await writeLyricsTxtFile(filePath, lyrics);
     }
 
     let writtenToHeader = false;
