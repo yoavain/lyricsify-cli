@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { backupFile, copyFile, ensureDir, fileExistsSync, getFileExtension, getFileWithAnotherExtension, getPlexPath, isFileSupported, pathExists, writeFile } from "~src/fileUtils";
+import { backupFile, copyFile, ensureDir, fileExistsSync, getFileExtension, getFileWithAnotherExtension, getTxtFilePath, isFileSupported, pathExists, writeFile } from "~src/fileUtils";
 
 describe("Test file utils", () => {
     describe("Test getFileExtension", () => {
@@ -16,8 +16,8 @@ describe("Test file utils", () => {
     
     describe("Test getFileWithAnotherExtension", () => {
         it("Should return correct path", () => {
-            const plexPath: string = getFileWithAnotherExtension("/path/to/test.mp3", ".other");
-            expect(plexPath).toBe(path.join("/path/to/test.other"));
+            const txtFilePath: string = getFileWithAnotherExtension("/path/to/test.mp3", ".other");
+            expect(txtFilePath).toBe(path.join("/path/to/test.other"));
         });
         it("Should throw on invalid input", () => {
             try {
@@ -30,14 +30,14 @@ describe("Test file utils", () => {
         });
     });
     
-    describe("Test getPlexPath", () => {
+    describe("Test getTxtFilePath", () => {
         it("Should return correct path", () => {
-            const plexPath: string = getPlexPath("/path/to/test.mp3");
-            expect(plexPath).toBe(path.join("/path/to/test.txt"));
+            const txtFilePath: string = getTxtFilePath("/path/to/test.mp3");
+            expect(txtFilePath).toBe(path.join("/path/to/test.txt"));
         });
         it("Should throw on invalid input", () => {
             try {
-                getPlexPath("/path/to/test.txt");
+                getTxtFilePath("/path/to/test.txt");
                 fail();
             }
             catch (e) {

@@ -12,20 +12,26 @@
 
 ## A tool for downloading Hebrew lyrics from Shironet
 
-### Migrate mode
-Import lyrics for file headers into the database
+### Save header
+Save lyrics to the file header
 
-### Plex mode
-Write `.txt` file with the lyrics next to the audio file
+### Save txt (AKA. Plex mode)
+Write `.txt` file with the lyrics next to the audio file. 
 
-### Dry-run mode
+### Dry-run
 Run without making changes to your file system
 
-### Quiet mode
+### Skip backup
+Skip backup of the original file
+
+### Quiet
 Run without notifications
 
-### Local mode
-Run without calling Shironet
+### Offline
+Run without fetching lyrics from internet
+
+### Verbose
+Run with more information
 
 ## Installer
 
@@ -44,16 +50,20 @@ Usage example:
 ```
 lyricsify.exe <filename>
 
+  filename  file or folder to handle                                    [string]
+
 Options:
-  -v, --verbose    print additional logs                               [boolean]
-  -d, --dry-run    dry-run                                             [boolean]
-  -p, --plex-mode  plex-mode                                           [boolean]
-  -m, --migrate    migrate                                             [boolean]
-  -l, --local      local                                               [boolean]
-  -q, --quiet      quiet                                               [boolean]
-      --version    Show version number                                 [boolean]
-      --help       Show help                                           [boolean]
-```  
+  -s, --save-header    save lyrics in file header                      [boolean]
+  -t, --save-txt       save lyrics to a txt file                       [boolean]
+  -p, --disable-cache  do not cache lyrics                             [boolean]
+  -l, --offline        do not download lyrics                          [boolean]
+  -d, --dry-run        not making any changes to files                 [boolean]
+  -x, --skip-backup    do not backup original file                     [boolean]
+  -q, --quiet          disable notifications                           [boolean]
+  -v, --verbose        print additional logs                           [boolean]
+      --version        Show version number                             [boolean]
+      --help           Show help                                       [boolean]
+```
 
 ---
 

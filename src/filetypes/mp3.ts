@@ -29,10 +29,12 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
     };
 };
 
-const writeLyrics = async (filePath: string, language: Language, lyrics: string) => {
+const writeLyrics = async (filePath: string, language: Language, lyrics: string, skipBackup?: boolean) => {
     const existingTags: NodeID3.Tags = await NodeID3Promise.read(filePath);
     if (!existingTags?.unsynchronisedLyrics?.text) {
-        await backupFile(filePath);
+        if (!skipBackup) {
+            await backupFile(filePath);
+        }
         const lyricsTags: NodeID3.Tags = {
             unsynchronisedLyrics: {
                 language: language,

@@ -4,11 +4,13 @@ import { getCliConfig } from "~src/config/cliConfig";
 
 export type Config = {
     filename: string
-    plex: boolean
-    migrate: boolean
+    saveHeader: boolean
+    saveTxt: boolean
+    disableCache: boolean
+    offline: boolean
     dryRun: boolean
+    skipBackup: boolean
     quiet: boolean
-    local: boolean
     verbose: boolean
     snoreToastPath: string
 }

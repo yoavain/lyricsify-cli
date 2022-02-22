@@ -35,11 +35,13 @@ jest.mock("~src/notifier", () => ({
 }));
 
 const commonConfig: Omit<Config, "filename"> = {
-    plex: false,
-    migrate: false,
+    saveHeader: false,
+    saveTxt: true,
+    disableCache: false,
+    offline: false,
     dryRun: false,
+    skipBackup: false,
     quiet: false,
-    local: false,
     verbose: false,
     snoreToastPath: "path/to/snoretoast"
 };

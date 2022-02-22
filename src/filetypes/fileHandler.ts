@@ -11,7 +11,7 @@ export type FileHandler = {
     getExtension: () => SupportedFileExtension
     verifyType: (audioMetadata: IAudioMetadata) => boolean
     parseLyrics: (audioMetadata: IAudioMetadata) => LyricsField
-    writeLyrics: (filePath: string, language: Language, lyrics: string) => Promise<void>
+    writeLyrics: (filePath: string, language: Language, lyrics: string, skipBackup?: boolean) => Promise<void>
 };
 
 export const getFileHandler = (filePath: string): FileHandler => {

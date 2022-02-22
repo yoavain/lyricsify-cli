@@ -47,7 +47,7 @@ describe("Test lyrics", () => {
             expect(Shironet.getLyrics).toHaveBeenCalledWith("The Sign", "Ace of Base");
             expect(dbClient.putLyricsInDb).not.toHaveBeenCalled();
         });
-        it("should not call service if in local mode, and save into cache", async () => {
+        it("should not call service if in offline mode, and save into cache", async () => {
             jest.spyOn(dbClient, "getLyricsFromDb").mockImplementation(async () => null);
             jest.spyOn(dbClient, "putLyricsInDb").mockImplementation(async () => null);
             jest.spyOn(Shironet, "getLyrics").mockImplementation(async () => ({ language: Language.HEBREW, lyrics: "Lyrics" }));

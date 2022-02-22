@@ -3,7 +3,7 @@ import type { FileHandler } from "~src/filetypes/fileHandler";
 import { getFileHandler } from "~src/filetypes/fileHandler";
 import type { FileMetadata } from "~src/filetypes/common";
 import { getFileMetadata } from "~src/filetypes/common";
-import { writeLyricsHeader, writePlexLyrics } from "~src/filetypes/commonWriter";
+import { writeLyricsHeader, writeLyricsTxtFile } from "~src/filetypes/commonWriter";
 import { putLyricsInDbIfNeeded } from "~src/db/dbClient";
 import type { Lyrics } from "~src/types";
 import { getLyrics } from "~src/lyrics";
@@ -17,7 +17,29 @@ import path from "path";
 
 const BATCH_SLEEP_DURATION = 1000; // milliseconds
 
-export const handleFile = async (filePath: string, { migrate, local, dryRun, plex }: Omit<Config, "filename">, logger?: LoggerInterface, notifier?: NotifierInterface) => {
+const notifyResult = (notifier: NotifierInterface, writtenToHeader: boolean, writtenToTxtFile: boolean, lyricsInHeader: boolean, saveHeader: boolean, saveTxt: boolean) => {
+    if (writtenToHeader && writtenToTxtFile) {
+        notifier?.notif(NotificationText.LYRICS_WRITTEN_TO_HEADER_AND_TXT, NotificationType.DOWNLOAD);
+    }
+    else if (writtenToHeader) {
+        notifier?.notif(NotificationText.LYRICS_WRITTEN_TO_HEADER, NotificationType.DOWNLOAD);
+    }
+    else if (writtenToTxtFile) {
+        notifier?.notif(NotificationText.LYRICS_WRITTEN_TO_TXT, NotificationType.DOWNLOAD);
+    }
+    else if (saveHeader && lyricsInHeader) {
+        notifier?.notif(NotificationText.LYRICS_ALREADY_EXIST, NotificationType.WARNING);
+    }
+    else if (saveTxt) {
+        notifier?.notif(NotificationText.LYRICS_NOT_WRITTEN_TO_TXT, NotificationType.WARNING);
+    }
+    else {
+        notifier?.notif(NotificationText.LYRICS_NOT_WRITTEN_TO_HEADER_OR_TXT, NotificationType.WARNING);
+    }
+};
+
+export const handleFile = async (filePath: string, { saveHeader, saveTxt, disableCache, offline, dryRun, skipBackup }: Omit<Config, "filename">,
+    logger?: LoggerInterface, notifier?: NotifierInterface) => {
     // Assumes file is supported
     logger?.info(`Handling file ${filePath}`);
 
@@ -31,14 +53,14 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
     const lyricsInHeader = Boolean(language && lyrics);
 
     if (lyricsInHeader) {
-        if (migrate) {
+        if (!disableCache) {
             await putLyricsInDbIfNeeded(artist, title, language, lyrics);
-            notifier?.notif(NotificationText.MIGRATING, NotificationType.DOWNLOAD);
+            logger?.verbose("Saving lyrics from header to cache");
         }
     }
     else {
         // Fetch lyrics (from cache or service. put in cache if needed)
-        const fetchedLyrics: Lyrics = await getLyrics(artist, title, local);
+        const fetchedLyrics: Lyrics = await getLyrics(artist, title, offline);
 
         // No lyrics in file, and no lyrics from service
         if (!fetchedLyrics) {
@@ -55,24 +77,20 @@ export const handleFile = async (filePath: string, { migrate, local, dryRun, ple
         return;
     }
 
-    if (plex) {
+    let writtenToTxtFile = false;
+    if (saveTxt) {
         // write file
-        const plexLyricsWritten: boolean = await writePlexLyrics(filePath, lyrics);
-        if (plexLyricsWritten) {
-            notifier?.notif(NotificationText.LYRICS_WRITTEN_TO_TXT, NotificationType.DOWNLOAD);
-        }
-        else {
-            notifier?.notif(NotificationText.LYRICS_NOT_WRITTEN_TO_TXT, NotificationType.WARNING);
-        }
+        writtenToTxtFile = await writeLyricsTxtFile(filePath, lyrics);
     }
-    else if (!lyricsInHeader) {
+
+    let writtenToHeader = false;
+    if (!lyricsInHeader && saveHeader) {
         // write headers
-        await writeLyricsHeader(filePath, fileHandler, language, lyrics);
-        notifier?.notif(NotificationText.LYRICS_WRITTEN_TO_HEADER, NotificationType.DOWNLOAD);
+        await writeLyricsHeader(filePath, fileHandler, language, lyrics, skipBackup);
+        writtenToHeader = true;
     }
-    else {
-        notifier?.notif(NotificationText.LYRICS_ALREADY_EXIST, NotificationType.WARNING);
-    }
+
+    notifyResult(notifier, writtenToHeader, writtenToTxtFile, lyricsInHeader, saveHeader, saveTxt);
 };
 
 export const handleFolder = async (dir: string, config: Config, logger?: LoggerInterface, notifier?: NotifierInterface): Promise<void> => {

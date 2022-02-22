@@ -33,10 +33,12 @@ const parseLyrics = (audioMetadata: IAudioMetadata): LyricsField => {
     };
 };
 
-const writeLyrics = async (filePath: string, language: Language, lyrics: string) => {
+const writeLyrics = async (filePath: string, language: Language, lyrics: string, skipBackup?: boolean) => {
     const metaFlac = new MetaFlac(filePath);
     if (!metaFlac.getTag("UNSYNCEDLYRICS")) {
-        await backupFile(filePath);
+        if (!skipBackup) {
+            await backupFile(filePath);
+        }
         metaFlac.setTag(`UNSYNCEDLYRICS=${language}||${lyrics}`);
         metaFlac.save();
     }
