@@ -57,7 +57,7 @@ LYRICSIFY_OFFLINE=false
 # Do not make any changes to files
 LYRICSIFY_DRY_RUN_MODE=false
 
-# Do not create a backup of the original file
+# Do not create a backup of the original file (use at your own risk)
 LYRICSIFY_SKIP_BACKUP=false
 
 # Disables notifications
@@ -69,7 +69,7 @@ LYRICSIFY_VERBOSE_MODE=false
 
 ### CLI
 
-Usage example:
+Usage:
 
 ```
 lyricsify.exe <filename>
@@ -89,6 +89,12 @@ Options:
       --help           Show help                                       [boolean]
 ```
 
+examples:
+```
+lyricsify.exe "X:\\Music\\song.mp3" --save-header --save-txt
+
+lyricsify.exe "X:\\Music\\" --quiet --save-txt
+```
 ---
 
 ## To build
