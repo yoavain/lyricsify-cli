@@ -49,6 +49,7 @@ LYRICSIFY_SAVE_HEADER=false
 # Writes .txt file next to the audio file (i.e. /path/to/audio.mp3 -> /path/to/audio.txt)
 LYRICSIFY_SAVE_TXT=true
 
+# Do not save lyrics to a local database
 LYRICSIFY_DISABLE_CACHE=false
 
 # Do not fetch lyrics from the web
