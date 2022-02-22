@@ -24,8 +24,8 @@ export const main = async () => {
     // Notifier
     const notifier: NotifierInterface = new Notifier(logger, snoreToastPath, quiet);
 
-    logger.verbose(`Argv: ${process.argv.join(" ")}`);
-    logger.verbose(`Config: ${JSON.stringify(config)}`);
+    logger.verbose(`Argv: ${JSON.stringify(process.argv, null, "\t")}`);
+    logger.verbose(`Config: ${JSON.stringify(config, null, "\t")}`);
     if (typeof filename === "string") {
         logger.info(`*** Looking for lyrics for "${filename}" ***`);
         const fullpath: string = filename.replace(/\\/g, "/");
