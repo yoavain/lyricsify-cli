@@ -102,14 +102,14 @@ describe("test main", () => {
         jest.spyOn(fileUtils, "ensureDir").mockResolvedValue("");
         jest.spyOn(fileUtils, "isFileSupported").mockReturnValue(true);
         jest.spyOn(fs, "lstatSync").mockReturnValue({ isDirectory: () => false } as Stats);
-        jest.spyOn(logic, "handleFile").mockRejectedValue({ error: "something went wrong" });
+        jest.spyOn(logic, "handleFile").mockRejectedValue(new Error("something went wrong"));
 
         try {
             await main();
             fail();
         }
         catch (e) {
-            expect(mockLogger.error).toHaveBeenCalledWith("Cannot handle /path/to/file.mp3");
+            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringMatching(/^Cannot handle \/path\/to\/file.mp3: something went wrong: /));
         }
     });
 });
