@@ -1,6 +1,8 @@
-import type { NotifierInterface, NotificationText } from "~src/notifier";
-import { NotificationType, Notifier } from "~src/notifier";
-import type { LoggerInterface } from "~src/logger";
+import type { NotifierInterface } from "~src/notification/notifier";
+import { Notifier } from "~src/notification/notifier";
+import type { LoggerInterface } from "~src/log/logger";
+import type { NotificationText } from "~src/notification/notifierTypes";
+import { NotificationType } from "~src/notification/notifierTypes";
 import { MockLogger } from "~test/__mocks__";
 
 describe("Test notifier", () => {

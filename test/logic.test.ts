@@ -4,14 +4,14 @@ import * as dbClient from "~src/db/dbClient";
 import * as commonWriter from "~src/filetypes/commonWriter";
 import * as lyrics from "~src/lyrics";
 import * as utils from "~src/utils";
-import type { Stats } from "fs";
-import fs from "fs";
 import { Language } from "~src/types";
 import { handleFile, handleFolder } from "~src/logic";
 import type { Config } from "~src/config/commonConfig";
 import { MP3 } from "~src/filetypes/mp3";
-import type { NotifierInterface } from "~src/notifier";
-import { NotificationText, NotificationType } from "~src/notifier";
+import { BatchContext } from "~src/state/batchContext";
+import type { ContextState } from "~src/state/context";
+import type { Stats } from "fs";
+import fs from "fs";
 import path from "path";
 
 const FULL_PATH = "test/logic.test.mp3";
@@ -23,26 +23,38 @@ describe("Test logic", () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title", language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(dbClient, "getLyricsFromDb").mockResolvedValue(null);
             jest.spyOn(dbClient, "putLyricsInDbIfNeeded").mockImplementation(async () => {});
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { dryRun: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { dryRun: true } as Config, undefined);
 
             expect(dbClient.putLyricsInDbIfNeeded).toHaveBeenCalledWith("artist", "title", Language.HEBREW, "Lyrics");
-            expect(notifier.notif).toHaveBeenCalledTimes(1);
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_FOUND_DRY_RUN, NotificationType.WARNING);
+            expect(contextState).toEqual({
+                dryRun: true,
+                lyricsFetched: false,
+                lyricsFoundInHeader: true,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: false,
+                savedToCache: true
+            });
         });
 
         it("Should not save lyrics to cache, when lyrics found in metadata, when disableCache is true", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title", language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(dbClient, "getLyricsFromDb").mockResolvedValue(null);
             jest.spyOn(dbClient, "putLyricsInDbIfNeeded").mockImplementation(async () => {});
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true, dryRun: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true, dryRun: true } as Config, undefined);
 
             expect(dbClient.putLyricsInDbIfNeeded).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledTimes(1);
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_FOUND_DRY_RUN, NotificationType.WARNING);
+            expect(contextState).toEqual({
+                dryRun: true,
+                lyricsFetched: false,
+                lyricsFoundInHeader: true,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: false,
+                savedToCache: false
+            });
         });
 
         it("Should not do anything, when in lyrics not found", async () => {
@@ -50,13 +62,19 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue(null);
             jest.spyOn(commonWriter, "writeLyricsTxtFile");
             jest.spyOn(commonWriter, "writeLyricsHeader");
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_NOT_FOUND, NotificationType.WARNING);
+            expect(contextState).toEqual({
+                lyricsFetched: false,
+                lyricsFoundInHeader: false,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: false,
+                savedToCache: false
+            });
         });
 
         it("Should not do anything, when in dry-run and lyrics found", async () => {
@@ -64,13 +82,20 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(commonWriter, "writeLyricsTxtFile");
             jest.spyOn(commonWriter, "writeLyricsHeader");
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true, dryRun: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true, dryRun: true } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_FOUND_DRY_RUN, NotificationType.WARNING);
+            expect(contextState).toEqual({
+                dryRun: true,
+                lyricsFetched: true,
+                lyricsFoundInHeader: false,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: false,
+                savedToCache: false
+            });
         });
 
         it("Should call txt file writer, when saveTxt is true, with writing", async () => {
@@ -78,13 +103,20 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(commonWriter, "writeLyricsTxtFile").mockImplementation(async () => true);
             jest.spyOn(commonWriter, "writeLyricsHeader");
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true, saveTxt: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true, saveTxt: true } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_WRITTEN_TO_TXT, NotificationType.DOWNLOAD);
+            expect(contextState).toEqual({
+                lyricsFetched: true,
+                lyricsFoundInHeader: false,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: true,
+                savedToCache: false,
+                shouldSaveTxt: true
+            });
         });
 
         it("Should call txt file writer, when saveTxt is true, without writing", async () => {
@@ -92,13 +124,20 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(commonWriter, "writeLyricsTxtFile").mockImplementation(async () => false);
             jest.spyOn(commonWriter, "writeLyricsHeader");
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true, saveTxt: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true, saveTxt: true } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_NOT_WRITTEN_TO_TXT, NotificationType.WARNING);
+            expect(contextState).toEqual({
+                lyricsFetched: true,
+                lyricsFoundInHeader: false,
+                lyricsTxtAlreadyExist: true,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: false,
+                savedToCache: false,
+                shouldSaveTxt: true
+            });
         });
 
         it("Should call headers writer, when saveHeader is true", async () => {
@@ -106,13 +145,20 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(commonWriter, "writeLyricsTxtFile");
             jest.spyOn(commonWriter, "writeLyricsHeader").mockImplementation(async () => {});
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true, saveHeader: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true, saveHeader: true } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledWith(FULL_PATH, MP3, Language.HEBREW, "Lyrics", undefined);
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_WRITTEN_TO_HEADER, NotificationType.DOWNLOAD);
+            expect(contextState).toEqual({
+                lyricsFetched: true,
+                lyricsFoundInHeader: false,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: true,
+                lyricsWrittenToTxt: false,
+                savedToCache: false,
+                shouldSaveHeader: true
+            });
         });
 
         it("Should call both txt file writer and headers writer, when both saveTxt and saveHeader are true", async () => {
@@ -120,37 +166,58 @@ describe("Test logic", () => {
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(commonWriter, "writeLyricsTxtFile").mockImplementation(async () => true);
             jest.spyOn(commonWriter, "writeLyricsHeader").mockImplementation(async () => {});
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true, saveTxt: true, saveHeader: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true, saveTxt: true, saveHeader: true } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).toHaveBeenCalledWith(FULL_PATH, "Lyrics");
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledWith(FULL_PATH, MP3, Language.HEBREW, "Lyrics", undefined);
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_WRITTEN_TO_HEADER_AND_TXT, NotificationType.DOWNLOAD);
+            expect(contextState).toEqual({
+                lyricsFetched: true,
+                lyricsFoundInHeader: false,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: true,
+                lyricsWrittenToTxt: true,
+                savedToCache: false,
+                shouldSaveHeader: true,
+                shouldSaveTxt: true
+            });
         });
 
         it("Should not call txt file writer or headers writer, when both saveTxt and saveHeader are false", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: Language.HEBREW, lyrics: "Lyrics" });
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_NOT_WRITTEN_TO_HEADER_OR_TXT, NotificationType.WARNING);
+            expect(contextState).toEqual({
+                lyricsFetched: true,
+                lyricsFoundInHeader: false,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: false,
+                savedToCache: false
+            });
         });
 
         it("Should not call headers writer, when lyrics already in headers", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title", language: Language.HEBREW, lyrics: "Lyrics" });
             jest.spyOn(lyrics, "getLyrics").mockResolvedValue({ language: Language.HEBREW, lyrics: "Lyrics" });
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFile(FULL_PATH, { disableCache: true, saveHeader: true } as Config, undefined, notifier);
+            const contextState: ContextState = await handleFile(FULL_PATH, { disableCache: true, saveHeader: true } as Config, undefined);
 
             expect(commonWriter.writeLyricsTxtFile).not.toHaveBeenCalled();
             expect(commonWriter.writeLyricsHeader).not.toHaveBeenCalled();
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.LYRICS_ALREADY_EXIST, NotificationType.WARNING);
+            expect(contextState).toEqual({
+                lyricsFetched: false,
+                lyricsFoundInHeader: true,
+                lyricsTxtAlreadyExist: false,
+                lyricsWrittenToHeader: false,
+                lyricsWrittenToTxt: false,
+                savedToCache: false,
+                shouldSaveHeader: true
+            });
         });
     });
 
@@ -165,10 +232,22 @@ describe("Test logic", () => {
             jest.spyOn(fs, "readdirSync").mockReturnValue(["supported1.mp3", "supported2.flac", "unsupported.wav"]);
             jest.spyOn(fs, "lstatSync").mockReturnValue({ isDirectory: () => false } as Stats);
 
-            await handleFolder(FOLDER_PATH, { disableCache: true, saveHeader: true } as Config);
+            const config = { disableCache: true, saveHeader: true } as Config;
+            const batchContext: BatchContext = new BatchContext(config);
+            await handleFolder(FOLDER_PATH, config, batchContext);
 
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(2);
             expect(utils.sleep).toHaveBeenCalledTimes(2);
+            expect(batchContext.get()).toEqual({
+                filesHandled: 2,
+                lyricsFetched: 2,
+                lyricsFoundInHeader: 0,
+                lyricsTxtAlreadyExist: 0,
+                lyricsWrittenToHeader: 2,
+                lyricsWrittenToTxt: 0,
+                partial: false,
+                savedToCache: 0
+            });
         });
         it("Should handle folders recursively", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
@@ -186,10 +265,22 @@ describe("Test logic", () => {
             }
             } as Stats));
 
-            await handleFolder(FOLDER_PATH, { disableCache: true, saveHeader: true } as Config);
+            const config = { disableCache: true, saveHeader: true } as Config;
+            const batchContext: BatchContext = new BatchContext(config);
+            await handleFolder(FOLDER_PATH, config, batchContext);
 
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(2);
             expect(utils.sleep).toHaveBeenCalledTimes(2);
+            expect(batchContext.get()).toEqual({
+                filesHandled: 2,
+                lyricsFetched: 2,
+                lyricsFoundInHeader: 0,
+                lyricsTxtAlreadyExist: 0,
+                lyricsWrittenToHeader: 2,
+                lyricsWrittenToTxt: 0,
+                partial: false,
+                savedToCache: 0
+            });
         });
         it("Should not handle unsupported files", async () => {
             jest.spyOn(fileCommon, "getFileMetadata").mockResolvedValue({ artist: "artist", title: "title" });
@@ -200,13 +291,23 @@ describe("Test logic", () => {
             // @ts-ignore
             jest.spyOn(fs, "readdirSync").mockReturnValue(["unsupported.wav"]);
             jest.spyOn(fs, "lstatSync").mockReturnValue({ isDirectory: () => false } as Stats);
-            const notifier: NotifierInterface = { notif: jest.fn() } as NotifierInterface;
 
-            await handleFolder(FOLDER_PATH, { disableCache: true } as Config, undefined, notifier);
+            const config = { disableCache: true } as Config;
+            const batchContext: BatchContext = new BatchContext(config);
+            await handleFolder(FOLDER_PATH, config, batchContext);
 
             expect(commonWriter.writeLyricsHeader).toHaveBeenCalledTimes(0);
             expect(utils.sleep).toHaveBeenCalledTimes(0);
-            expect(notifier.notif).toHaveBeenCalledWith(NotificationText.NO_FILE_HANDLED, NotificationType.WARNING);
+            expect(batchContext.get()).toEqual({
+                filesHandled: 0,
+                lyricsFetched: 0,
+                lyricsFoundInHeader: 0,
+                lyricsTxtAlreadyExist: 0,
+                lyricsWrittenToHeader: 0,
+                lyricsWrittenToTxt: 0,
+                partial: false,
+                savedToCache: 0
+            });
         });
     });
 });

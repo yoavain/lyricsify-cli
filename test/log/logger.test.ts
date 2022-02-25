@@ -1,4 +1,4 @@
-import { Logger } from "~src/logger";
+import { Logger } from "~src/log/logger";
 
 const mockLog = jest.fn();
 jest.mock("winston", () => ({
@@ -36,5 +36,9 @@ describe("Test logger", () => {
         const logger = new Logger("mockLogFile");
         const logFileLocation = logger.getLogFileLocation();
         expect(logFileLocation).toEqual("mockLogFile");
+    });
+    it("Test setLogLevel", () => {
+        const logger = new Logger("mockLogFile");
+        logger.setLogLevel("debug");
     });
 });

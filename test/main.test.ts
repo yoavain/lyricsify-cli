@@ -1,3 +1,5 @@
+import { NotificationText, NotificationType } from "~src/notification/notifierTypes";
+
 const { MockLogger } = require("./__mocks__/logger");
 const { MockNotifier } = require("./__mocks__/notifier");
 
@@ -5,32 +7,21 @@ import * as config from "~src/config/commonConfig";
 import * as logic from "~src/logic";
 import * as fileUtils from "~src/fileUtils";
 import type { Config } from "~src/config/commonConfig";
-import { NotificationType } from "~src/notifier";
 import { main } from "~src/main";
 import type { Stats } from "fs";
 import fs from "fs";
 
 const mockLogger = new MockLogger();
-jest.mock("~src/logger", () => ({
+jest.mock("~src/log/logger", () => ({
     Logger: function() {
         return mockLogger;
     }
 }));
 
 const mockNotifier = new MockNotifier();
-jest.mock("~src/notifier", () => ({
+jest.mock("~src/notification/notifier", () => ({
     Notifier: function() {
         return mockNotifier;
-    },
-    NotificationText: {
-        MISSING_INPUT_FILE: "Missing input file"
-    },
-    NotificationType: {
-        LOGO: "LOGO",
-        DOWNLOAD: "DOWNLOAD",
-        WARNING: "WARNING",
-        NOT_FOUND: "NOT_FOUND",
-        FAILED: "FAILED"
     }
 }));
 
@@ -64,7 +55,7 @@ describe("test main", () => {
 
         await main();
 
-        expect(logic.handleFolder).toHaveBeenCalledWith("/path/to/folder", conf, mockLogger, mockNotifier);
+        expect(logic.handleFolder).toHaveBeenCalledWith("/path/to/folder", conf, expect.anything(), mockLogger);
         expect(logic.handleFile).not.toHaveBeenCalled();
     });
     it("should should call handleFile, when input is a file", async () => {
@@ -78,7 +69,7 @@ describe("test main", () => {
 
         await main();
 
-        expect(logic.handleFile).toHaveBeenCalledWith("/path/to/file.mp3", conf, mockLogger, mockNotifier);
+        expect(logic.handleFile).toHaveBeenCalledWith("/path/to/file.mp3", conf, mockLogger);
         expect(logic.handleFolder).not.toHaveBeenCalled();
     });
     it("should notify an error when file is not a string", async () => {
@@ -94,7 +85,22 @@ describe("test main", () => {
 
         expect(logic.handleFile).not.toHaveBeenCalled();
         expect(logic.handleFolder).not.toHaveBeenCalled();
-        expect(mockNotifier.notif).toHaveBeenCalledWith("Missing input file", NotificationType.FAILED);
+        expect(mockNotifier.notif).toHaveBeenCalledWith(NotificationText.MISSING_INPUT_FILE, NotificationType.FAILED);
+    });
+    it("should notify an unsupported file", async () => {
+        const conf: Config = { filename: "/path/to/file.mp3", ...commonConfig };
+        jest.spyOn(config, "getConfig").mockReturnValue(conf);
+        jest.spyOn(fileUtils, "ensureDir").mockResolvedValue("");
+        jest.spyOn(fileUtils, "isFileSupported").mockReturnValue(false);
+        jest.spyOn(fs, "lstatSync").mockReturnValue({ isDirectory: () => false } as Stats);
+        jest.spyOn(logic, "handleFolder").mockResolvedValue(null);
+        jest.spyOn(logic, "handleFile").mockResolvedValue(null);
+
+        await main();
+
+        expect(logic.handleFile).not.toHaveBeenCalled();
+        expect(logic.handleFolder).not.toHaveBeenCalled();
+        expect(mockNotifier.notif).toHaveBeenCalledWith(NotificationText.UNSUPPORTED_INPUT_FILE, NotificationType.FAILED);
     });
     it("should log an error on failure", async () => {
         const conf: Config = { filename: "/path/to/file.mp3", ...commonConfig };
