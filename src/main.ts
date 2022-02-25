@@ -40,7 +40,7 @@ export const main = async () => {
             }
         }
         catch (e) {
-            logger.error(`Cannot handle ${fullpath}`);
+            logger.error(`Cannot handle ${fullpath}: ${e.message}: ${e.stack}`);
         }
     }
     else {
