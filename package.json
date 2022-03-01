@@ -35,7 +35,7 @@
     },
     "dependencies": {
         "metaflac-js": "1.0.5",
-        "music-metadata": "7.12.1",
+        "music-metadata": "7.12.2",
         "node-id3": "0.2.3",
         "node-notifier": "10.0.1",
         "puppeteer": "13.4.1",
