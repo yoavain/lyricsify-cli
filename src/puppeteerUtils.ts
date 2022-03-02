@@ -1,6 +1,6 @@
 import type { Browser, ElementHandle, Page } from "puppeteer";
 import puppeteer from "puppeteer";
-import { headlessMode } from "~src/config/fileConfig";
+import { disableHeadless } from "~src/config/fileConfig";
 
 let browserInstance: Browser;
 export const getBrowser = async (headless = true): Promise<Browser> => {
@@ -22,7 +22,7 @@ export const getBrowser = async (headless = true): Promise<Browser> => {
 };
 
 export const pageLoad = async (songSearchUrl: string, selector: string): Promise<Page> => {
-    const browser: Browser = await getBrowser(headlessMode);
+    const browser: Browser = await getBrowser(!disableHeadless);
     const page: Page = await browser.newPage();
     await Promise.all([
         page.goto(songSearchUrl),

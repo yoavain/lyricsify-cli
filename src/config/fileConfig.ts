@@ -23,6 +23,6 @@ export const getFileConfig = (): Omit<Config, "filename" | "snoreToastPath"> => 
 //region headless mode
 
 const HASH = "c5cd0fda6b1429589d80b453ea7bcf81b6f3a323d5f664ecaecd5f63fdb05ba5";
-export const headlessMode: boolean = process.env.LYRICSIFY_HEADLESS_MODE && (crypto.createHash("sha256").update(process.env.LYRICSIFY_HEADLESS_MODE).digest("hex") === HASH);
+export const disableHeadless: boolean = process.env.LYRICSIFY_DISABLE_HEADLESS && (crypto.createHash("sha256").update(process.env.LYRICSIFY_DISABLE_HEADLESS).digest("hex") === HASH);
 
 //endregion headless mode
