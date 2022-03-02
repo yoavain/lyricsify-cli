@@ -3,19 +3,19 @@ import puppeteer from "puppeteer";
 import { disableHeadless } from "~src/config/fileConfig";
 
 let browserInstance: Browser;
+let initPromise: Promise<Browser>;
 export const getBrowser = async (headless = true): Promise<Browser> => {
     if (!browserInstance) {
-        const browser = await puppeteer.launch({
-            headless: headless,
-            ignoreHTTPSErrors: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
-        });
+        if (!initPromise) {
+            initPromise = puppeteer.launch({
+                headless: headless,
+                ignoreHTTPSErrors: true,
+                args: ["--no-sandbox"]
+            });
+        }
+        const browser: Browser = await initPromise;
         if (!browserInstance) {
             browserInstance = browser;
-        }
-        else {
-            // in case of a race condition
-            await browser.close();
         }
     }
     return browserInstance;
