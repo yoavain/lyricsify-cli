@@ -39,7 +39,7 @@
         "node-id3": "0.2.3",
         "node-notifier": "10.0.1",
         "puppeteer": "13.5.1",
-        "sqlite-tag-spawned": "0.5.5",
+        "sqlite-tag-spawned": "0.5.6",
         "winston": "3.6.0",
         "yargs": "17.4.0"
     },
