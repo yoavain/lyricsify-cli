@@ -1,6 +1,13 @@
 import webpack from "webpack";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import path from "path";
+import fs from "fs";
+
+// Find chromium version path
+let versionPath: string; 
+fs.readdirSync(path.join(__dirname, "node_modules", "puppeteer", ".local-chromium")).forEach((file: string) => {
+    versionPath = file;
+});
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -59,7 +66,7 @@ export const baseConfig: webpack.Configuration = {
                     toType: "file"
                 },
                 {
-                    from: "node_modules/puppeteer/.local-chromium/win64-982053/chrome-win/",
+                    from: `node_modules/puppeteer/.local-chromium/${versionPath}/chrome-win/`,
                     to: "../dist/chrome-win/",
                     filter: (filepath) => !filepath.endsWith("interactive_ui_tests.exe")
                 },
