@@ -59,7 +59,7 @@ export const baseConfig: webpack.Configuration = {
                     toType: "file"
                 },
                 {
-                    from: "node_modules/puppeteer/.local-chromium/win64-970485/chrome-win/",
+                    from: "node_modules/puppeteer/.local-chromium/win64-982053/chrome-win/",
                     to: "../dist/chrome-win/",
                     filter: (filepath) => !filepath.endsWith("interactive_ui_tests.exe")
                 },
