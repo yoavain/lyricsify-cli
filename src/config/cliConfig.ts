@@ -59,5 +59,5 @@ export const getCliConfig = (argv: string[]): CliConfig => {
         .version("version", version)
         .help()
         .strict()
-        .argv;
+        .argv as CliConfig;
 };
