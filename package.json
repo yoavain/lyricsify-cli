@@ -48,7 +48,7 @@
         "@tsconfig/node14": "1.0.1",
         "@types/cross-spawn": "6.0.2",
         "@types/jest": "27.5.1",
-        "@types/node": "16.11.35",
+        "@types/node": "16.11.40",
         "@typescript-eslint/eslint-plugin": "5.23.0",
         "@typescript-eslint/parser": "5.23.0",
         "ajv": "8.11.0",
