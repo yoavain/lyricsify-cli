@@ -38,7 +38,7 @@
         "music-metadata": "7.12.4",
         "node-id3": "0.2.3",
         "node-notifier": "10.0.1",
-        "puppeteer": "15.1.1",
+        "puppeteer": "15.3.2",
         "sqlite-tag-spawned": "0.6.0",
         "winston": "3.8.1",
         "yargs": "17.5.1"
@@ -57,7 +57,7 @@
         "cross-spawn": "7.0.3",
         "dotenv": "16.0.1",
         "eslint": "8.19.0",
-        "eslint-import-resolver-typescript": "3.2.1",
+        "eslint-import-resolver-typescript": "3.2.5",
         "eslint-plugin-import": "2.26.0",
         "eslint-plugin-jest": "26.5.3",
         "eslint-plugin-node": "11.1.0",
