@@ -1,7 +1,6 @@
 # ![](https://raw.githubusercontent.com/yoavain/lyricsify-cli/main/resources/icons/64x64_logo.png) Lyricsify - Lyrics Downloader  <br>
 
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/yoavain/lyricsify-cli.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yoavain/lyricsify-cli/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/yoavain/lyricsify-cli.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yoavain/lyricsify-cli/context:javascript)
+[![CodeQL](https://github.com/yoavain/lyricsify-cli/workflows/CodeQL/badge.svg)](https://github.com/yoavain/lyricsify-cli/actions?query=workflow%3ACodeQL)
 [![Actions Status](https://github.com/yoavain/lyricsify-cli/workflows/Node%20CI/badge.svg)](https://github.com/yoavain/lyricsify-cli/actions)
 ![types](https://img.shields.io/npm/types/typescript.svg)
 ![commit](https://img.shields.io/github/last-commit/yoavain/lyricsify-cli.svg)
