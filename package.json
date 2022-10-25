@@ -31,7 +31,7 @@
     "author": "yoavain",
     "license": "ISC",
     "engines": {
-        "node": ">=14 <17",
+        "node": ">=14 <19",
         "npm": "<9"
     },
     "dependencies": {
@@ -49,7 +49,7 @@
         "@tsconfig/node14": "1.0.3",
         "@types/cross-spawn": "6.0.2",
         "@types/jest": "29.2.0",
-        "@types/node": "18.11.3",
+        "@types/node": "18.11.5",
         "@typescript-eslint/eslint-plugin": "5.40.1",
         "@typescript-eslint/parser": "5.40.1",
         "ajv": "8.11.0",
