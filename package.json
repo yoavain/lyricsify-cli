@@ -39,7 +39,7 @@
         "music-metadata": "7.13.3",
         "node-id3": "0.2.5",
         "node-notifier": "10.0.1",
-        "puppeteer": "15.5.0",
+        "puppeteer": "19.7.0",
         "sqlite-tag-spawned": "0.6.0",
         "winston": "3.8.2",
         "yargs": "17.6.2"
