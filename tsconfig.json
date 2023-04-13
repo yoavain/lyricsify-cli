@@ -1,10 +1,10 @@
 {
-    "extends": "@tsconfig/node14/tsconfig.json",
+    "extends": "@tsconfig/node18",
     "compilerOptions": {
         "lib": ["es2020", "dom"],
         "strict": false,
         "moduleResolution": "node",
-        "importsNotUsedAsValues": "error",
+        "verbatimModuleSyntax": false,
         "allowJs": true,
         "noEmit": true,
         "baseUrl": ".",
