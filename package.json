@@ -39,7 +39,7 @@
         "music-metadata": "7.13.4",
         "node-id3": "0.2.6",
         "node-notifier": "10.0.1",
-        "puppeteer": "20.2.0",
+        "puppeteer": "20.2.1",
         "sqlite-tag-spawned": "0.6.0",
         "winston": "3.8.2",
         "yargs": "17.7.2"
@@ -75,7 +75,7 @@
         "tsconfig-paths": "4.2.0",
         "typescript": "5.0.4",
         "uuid": "9.0.0",
-        "webpack": "5.83.0",
+        "webpack": "5.83.1",
         "webpack-cli": "5.1.1"
     },
     "lint-staged": {
