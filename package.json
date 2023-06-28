@@ -46,7 +46,7 @@
     },
     "devDependencies": {
         "@jest/types": "29.5.0",
-        "@tsconfig/node18": "2.0.1",
+        "@tsconfig/node18": "18.2.0",
         "@types/cross-spawn": "6.0.2",
         "@types/jest": "29.5.2",
         "@types/node": "18.16.18",
