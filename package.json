@@ -41,7 +41,7 @@
         "node-notifier": "10.0.1",
         "puppeteer": "20.8.0",
         "sqlite-tag-spawned": "0.6.0",
-        "winston": "3.9.0",
+        "winston": "3.10.0",
         "yargs": "17.7.2"
     },
     "devDependencies": {
