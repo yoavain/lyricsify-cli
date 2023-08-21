@@ -45,7 +45,7 @@
         "yargs": "17.7.2"
     },
     "devDependencies": {
-        "@jest/types": "29.6.1",
+        "@jest/types": "29.6.3",
         "@tsconfig/node18": "18.2.0",
         "@types/cross-spawn": "6.0.2",
         "@types/jest": "29.5.3",
