@@ -7,7 +7,7 @@
     "types": "_build/index.d.ts",
     "scripts": {
         "postinstall": "npm run husky-install && npx fix-lockfile-integrity package-lock.json",
-        "husky-install": "git config --get core.hookspath || husky install",
+        "husky-install": "git config --get core.hookspath || husky",
         "build": "npm run eslint && npm run type-check && npm run test && npm run webpack && npm run nexe && npm run installer",
         "quick-build-exe": "npm run webpack && npm run nexe",
         "eslint": "eslint src/ test/ e2e/ *.ts",
@@ -31,7 +31,7 @@
     "author": "yoavain",
     "license": "ISC",
     "engines": {
-        "node": ">= 18 < 21",
+        "node": ">= 18",
         "npm": ">= 9"
     },
     "dependencies": {
